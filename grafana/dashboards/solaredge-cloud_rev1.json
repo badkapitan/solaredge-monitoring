@@ -9,7 +9,7 @@
       "pluginName": "InfluxDB"
     },
     {
-      "name": "DS_SUN_AND MOON",
+      "name": "DS_SUN_AND_MOON",
       "label": "Sun and Moon",
       "description": "",
       "type": "datasource",
@@ -587,7 +587,7 @@
       "dashes": false,
       "datasource": {
         "type": "fetzerch-sunandmoon-datasource",
-        "uid": "${DS_SUN_AND MOON}"
+        "uid": "${DS_SUN_AND_MOON}"
       },
       "fieldConfig": {
         "defaults": {
@@ -639,7 +639,7 @@
         {
           "datasource": {
             "type": "fetzerch-sunandmoon-datasource",
-            "uid": "${DS_SUN_AND MOON}"
+            "uid": "${DS_SUN_AND_MOON}"
           },
           "refId": "A",
           "target": [

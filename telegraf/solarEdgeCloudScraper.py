@@ -49,7 +49,7 @@ LAST_UPDATES = {}
 HOME_DIR = ''
 HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
 # Data is updated once a day at this interval. Assumed to be at the ~end of the day.
-UPDATE_INTERVAL_HOUR = 23
+UPDATE_INTERVAL_HOUR = 14
 UPDATE_INTERVAL_MIN = 50
 
 # ------------------------------ Utils -----------------------------------------
@@ -185,8 +185,9 @@ def initialize_installation_info():
     r = requests.get(f"{BASE_API_URL}/sites/list.json",
                      {'api_key': SETTING_API_KEY},
                      timeout=REQUEST_TIMEOUT)
+    print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
     if r.status_code != 200:
-        print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
+        # print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
         return False
 
     # Parse response
@@ -274,6 +275,7 @@ def ensure_logged_in(session: requests.Session, function):
 
 def update_all_data(endTime: datetime.datetime):
     playbackTimeStamps = LAST_UPDATES['playback']
+    print_err(f'Updating optimizers data')
     for site in SITE_IDS:
         if HAS_OPTIMIZERS[site]:
             nr_days = max((endTime - playbackTimeStamps[site]).days,
@@ -283,14 +285,17 @@ def update_all_data(endTime: datetime.datetime):
                 days = list(range(-nr_days, 0, 1))
             if get_playback_data_site(days, site):
                 playbackTimeStamps[site] = endTime
+    print_err(f'Updating power data')
     powerTimeStamps = LAST_UPDATES['power']
     for site in SITE_IDS:
         if get_power_api(site, powerTimeStamps[site], endTime):
             powerTimeStamps[site] = endTime
+    print_err(f'Updating energy data')
     energyTimeStamps = LAST_UPDATES['energy']
     for site in SITE_IDS:
         if get_energy_api(site, energyTimeStamps[site], endTime):
             energyTimeStamps[site] = endTime
+    print_err(f'Updating data data')
     dataTimeStamps = LAST_UPDATES['data']
     for site in SITE_IDS:
         if get_data_api(site, dataTimeStamps[site], endTime):
@@ -564,15 +569,26 @@ if len(sys.argv) == 2:
 while True:
     # Always run at the end of the day ~midnight to get the most accurate daily data.
     # Assumption: it will be dark by midnight
+    print_err(f'Main loop begin')
     now = datetime.datetime.now()
     nextUpdate = now.replace(hour=UPDATE_INTERVAL_HOUR,
                              minute=UPDATE_INTERVAL_MIN,
                              second=0)
     if now.hour >= UPDATE_INTERVAL_HOUR and now.minute >= UPDATE_INTERVAL_MIN:
         nextUpdate += datetime.timedelta(days=1)
-    time.sleep((nextUpdate - datetime.datetime.now()).total_seconds())
+
+    timeUntilUpdate = nextUpdate - datetime.datetime.now()
+
+    print_err(f'Time left until next update: {timeUntilUpdate} ')
+    secondsUntilUpdate = timeUntilUpdate.total_seconds() if timeUntilUpdate.total_seconds() > 0 else 0
+    time.sleep(secondsUntilUpdate)
 
     update_all_data(datetime.datetime.now().replace(hour=UPDATE_INTERVAL_HOUR,
                                                     minute=UPDATE_INTERVAL_MIN,
                                                     second=0))
+
+    print_err(f'Metrics scraped, sleeping for 10 mins')
+    time.sleep(600)
+
+    print_err(f'Main loop end')
 flush_and_exit(0)

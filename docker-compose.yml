@@ -4,6 +4,8 @@ services:
 
   influxdb:
     image: influxdb:2.6-alpine
+    container_name: solaredge-influxdb
+    restart: unless-stopped
     volumes:
       # Mount for influxdb data directory and configuration
       - influxdb:/var/lib/influxdb2:rw
@@ -14,8 +16,8 @@ services:
 
   telegraf:
     image: telegraf:1.25-alpine
-    depends_on:
-      - influxdb
+    container_name: solaredge-telegraf
+    restart: unless-stopped
     volumes:
       # Mount for telegraf config
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
@@ -25,6 +27,8 @@ services:
       dockerfile: telegraf/Dockerfile
     networks:
       - common_network
+    depends_on:
+      - influxdb
 
   grafana:
     image: grafana/grafana-enterprise
