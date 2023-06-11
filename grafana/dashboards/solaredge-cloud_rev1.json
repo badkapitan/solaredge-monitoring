@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_SOLAREDGE_CLOUD",
-      "label": "SolarEdge Cloud",
+      "label": "solaredge_cloud",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -17,6 +17,7 @@
       "pluginName": "Sun and Moon"
     }
   ],
+  "__elements": {},
   "__requires": [
     {
       "type": "panel",
@@ -28,7 +29,7 @@
       "type": "datasource",
       "id": "fetzerch-sunandmoon-datasource",
       "name": "Sun and Moon",
-      "version": "0.2.1"
+      "version": "0.3.0"
     },
     {
       "type": "panel",
@@ -40,12 +41,12 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.4.5"
+      "version": "9.5.3"
     },
     {
       "type": "panel",
       "id": "graph",
-      "name": "Graph",
+      "name": "Graph (old)",
       "version": ""
     },
     {
@@ -59,8 +60,11 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": false,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
@@ -68,22 +72,26 @@
       }
     ]
   },
+  "description": "Dashboard to visualize data from the SolarEdge Cloud API, scraped and stored in InfluxDb",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": 14169,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1617179629257,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "fixedColor": "super-light-blue",
             "mode": "fixed"
           },
-          "custom": {},
           "displayName": "Production",
           "mappings": [],
           "thresholds": {
@@ -119,9 +127,13 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -159,19 +171,20 @@
           "tags": []
         }
       ],
-      "title": "",
       "transparent": true,
       "type": "gauge"
     },
     {
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "fixedColor": "super-light-blue",
             "mode": "fixed"
           },
-          "custom": {},
           "displayName": "Lifetime production",
           "mappings": [],
           "thresholds": {
@@ -207,9 +220,13 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -247,7 +264,6 @@
           "tags": []
         }
       ],
-      "title": "",
       "transparent": true,
       "type": "gauge"
     },
@@ -256,10 +272,12 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "watt"
         },
         "overrides": [
@@ -288,7 +306,6 @@
       "hiddenSeries": false,
       "hideTimeOverride": true,
       "id": 6,
-      "interval": null,
       "legend": {
         "avg": false,
         "current": false,
@@ -305,7 +322,7 @@
         "alertThreshold": false
       },
       "percentage": false,
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -321,6 +338,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -359,9 +380,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Daily production",
       "tooltip": {
         "shared": true,
@@ -370,9 +389,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -380,25 +397,18 @@
         {
           "$$hashKey": "object:1045",
           "format": "watt",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:1046",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -406,10 +416,12 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "watt"
         },
         "overrides": [
@@ -465,7 +477,7 @@
         "alertThreshold": false
       },
       "percentage": false,
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -493,6 +505,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -531,9 +547,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Power",
       "tooltip": {
         "shared": true,
@@ -542,9 +556,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -552,7 +564,6 @@
         {
           "$$hashKey": "object:1173",
           "format": "watt",
-          "label": null,
           "logBase": 1,
           "max": "3500",
           "min": "0",
@@ -561,16 +572,12 @@
         {
           "$$hashKey": "object:1174",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -578,10 +585,12 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SUN_AND MOON}",
+      "datasource": {
+        "type": "fetzerch-sunandmoon-datasource",
+        "uid": "${DS_SUN_AND MOON}"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "degree"
         },
         "overrides": []
@@ -612,7 +621,7 @@
         "alertThreshold": false
       },
       "percentage": false,
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -628,14 +637,18 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "fetzerch-sunandmoon-datasource",
+            "uid": "${DS_SUN_AND MOON}"
+          },
           "refId": "A",
-          "target": "sun_altitude"
+          "target": [
+            "sun_altitude"
+          ]
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Sun Altitude",
       "tooltip": {
         "shared": true,
@@ -644,9 +657,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -654,7 +665,6 @@
         {
           "$$hashKey": "object:2623",
           "format": "degree",
-          "label": null,
           "logBase": 1,
           "max": "90",
           "min": "0",
@@ -663,26 +673,24 @@
         {
           "$$hashKey": "object:2624",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -706,6 +714,8 @@
       "id": 19,
       "options": {
         "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -715,11 +725,16 @@
           "values": false
         },
         "showUnfilled": true,
-        "text": {}
+        "text": {},
+        "valueMode": "color"
       },
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -762,7 +777,10 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P820A4C873246A955"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -771,6 +789,15 @@
       },
       "id": 10,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P820A4C873246A955"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Details",
       "type": "row"
     },
@@ -779,11 +806,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "watt"
         },
         "overrides": []
@@ -818,7 +847,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -828,6 +857,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -866,9 +899,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Per panel power",
       "tooltip": {
         "shared": true,
@@ -877,9 +908,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -887,25 +916,18 @@
         {
           "$$hashKey": "object:231",
           "format": "watt",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:232",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -913,10 +935,12 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SOLAREDGE_CLOUD}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "celsius"
         },
         "overrides": [
@@ -972,7 +996,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.5",
+      "pluginVersion": "9.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -988,6 +1012,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
           "groupBy": [
             {
               "params": [
@@ -1045,9 +1073,7 @@
           "yaxis": "left"
         }
       ],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Temperature",
       "tooltip": {
         "shared": true,
@@ -1056,9 +1082,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -1066,30 +1090,23 @@
         {
           "$$hashKey": "object:728",
           "format": "celsius",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:729",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     }
   ],
-  "refresh": "15m",
-  "schemaVersion": 27,
+  "refresh": "2h",
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "influxdb",
@@ -1103,10 +1120,7 @@
           "text": "solaredge_cloud",
           "value": "solaredge_cloud"
         },
-        "description": null,
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "bucket",
         "options": [
           {
@@ -1126,9 +1140,7 @@
           "value": ""
         },
         "description": "Site id, see SolarEdge's website",
-        "error": null,
         "hide": 0,
-        "label": null,
         "name": "site",
         "options": [
           {
@@ -1148,9 +1160,7 @@
           "value": ""
         },
         "description": "Inverter serial",
-        "error": null,
         "hide": 0,
-        "label": null,
         "name": "sn",
         "options": [
           {
@@ -1162,6 +1172,40 @@
         "query": "",
         "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "solaredge_cloud",
+          "value": "solaredge_cloud"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_SOLAREDGE_CLOUD",
+        "options": [],
+        "query": "influxdb",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Sun and Moon",
+          "value": "Sun and Moon"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_SUN_AND_MOON",
+        "options": [],
+        "query": "fetzerch-sunandmoon-datasource",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
       }
     ]
   },
@@ -1178,6 +1222,6 @@
   "timezone": "",
   "title": "SolarEdge Cloud",
   "uid": "-YG1drwMz",
-  "version": 30,
-  "description": "Dashboard to visualize data from the SolarEdge Cloud API, scraped and stored in InfluxDb"
+  "version": 2,
+  "weekStart": ""
 }

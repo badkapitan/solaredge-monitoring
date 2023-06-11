@@ -3,5 +3,6 @@
 **/.git
 **/.gitignore
 **/docker-compose*
+/venv
 LICENSE
 README.md

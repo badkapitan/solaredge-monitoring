@@ -13,5 +13,22 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_NAME=SolarEdge Monitoring
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Editor
       - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/solaredge-cloud_rev1.json
+      - GF_INSTALL_PLUGINS=fetzerch-sunandmoon-datasource
     ports:
       - 3000:3000
+  telegraf:
+    environment:
+      - SOLAREDGE_API_KEY=
+      - SOLAREDGE_SITE_USERNAME=
+      - SOLAREDGE_SITE_PW=
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=solaredge_cloud
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=myadmintoken
+  influxdb:
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=solaredge_cloud
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=myadmintoken

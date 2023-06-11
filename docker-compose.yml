@@ -4,8 +4,6 @@ services:
 
   influxdb:
     image: influxdb:2.6-alpine
-    env_file:
-      - influxv2.env
     volumes:
       # Mount for influxdb data directory and configuration
       - influxdb:/var/lib/influxdb2:rw
@@ -27,8 +25,6 @@ services:
       dockerfile: telegraf/Dockerfile
     networks:
       - common_network
-    env_file:
-      - influxv2.env
 
   grafana:
     image: grafana/grafana-enterprise

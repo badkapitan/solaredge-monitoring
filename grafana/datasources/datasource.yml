@@ -1,0 +1,35 @@
+# config file version
+apiVersion: 1
+
+# list of datasources that should be deleted from the database
+deleteDatasources:
+  - name: solaredge_cloud
+    orgId: 1
+
+# list of datasources to insert/update depending
+# whats available in the database
+datasources:
+  - orgId: 1
+    version: 2
+    name: solaredge_cloud
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    basicAuth: true
+    isDefault: true
+    jsonData:
+      defaultBucket: solaredge_cloud
+      httpMode: POST
+      organization: myorg
+      version: Flux
+    secureJsonData:
+      token: myadmintoken
+    editable: true
+  - orgId: 1
+    name: Sun and Moon
+    type: fetzerch-sunandmoon-datasource
+    access:       proxy
+    jsonData:
+        latitude:   51.4027
+        longitude:  21.1471
+    editable: true

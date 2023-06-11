@@ -19,9 +19,9 @@ import pytz
 # Automatically fetches all sites connected to the account/API key
 # Does not support the whole API, just what is required.
 #
-SETTING_API_KEY = ''
-SETTING_SITE_USERNAME = ''
-SETTING_SITE_PW = ''
+SETTING_API_KEY = os.getenv('SOLAREDGE_API_KEY', '')
+SETTING_SITE_USERNAME = os.getenv('SOLAREDGE_SITE_USERNAME', '')
+SETTING_SITE_PW = os.getenv('SOLAREDGE_SITE_PW', '')
 # Args:
 # - 'history' to scrape the past history from the cloud
 # - 'debug' to run the update loop once
@@ -47,7 +47,7 @@ SITE_TIMEZONES = {}
 HAS_OPTIMIZERS = {}
 LAST_UPDATES = {}
 HOME_DIR = ''
-HISTORY_SCRAPER_MAX_API_CALLS = 280  # Limit is 300/day, take some margin
+HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
 # Data is updated once a day at this interval. Assumed to be at the ~end of the day.
 UPDATE_INTERVAL_HOUR = 23
 UPDATE_INTERVAL_MIN = 50
