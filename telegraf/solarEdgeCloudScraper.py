@@ -40,6 +40,7 @@ REQUEST_TIMEOUT = 60
 SITE_COOKIE_FILE = 'solaredge.com.cookies'
 LAST_SUCCESSFUL_UPDATE_FILE = 'lastupdated'
 INSTALLATION_INFO_FILE = 'installinfo'
+SCRAPELOG_FILE = 'scrape.log'
 SITE_IDS = []
 SITES = ''  # Same as SITE_IDS but as string
 SERIALS = {}
@@ -51,6 +52,7 @@ HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
 # Data is updated once a day at this interval. Assumed to be at the ~end of the day.
 UPDATE_INTERVAL_HOUR = 14
 UPDATE_INTERVAL_MIN = 50
+MAX_HISTORY_MONTHS = 1
 
 # ------------------------------ Utils -----------------------------------------
 
@@ -89,6 +91,11 @@ def print_err(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
+def log_err(message):
+    with open(os.path.join(HOME_DIR, SCRAPELOG_FILE), "a") as f:
+        f.write(message + '\n')
+
+
 # In ns
 def to_unix_timestamp(date: str):
     return f"{int(datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').timestamp())}000000000"
@@ -119,6 +126,7 @@ def get_date_intervals(start: datetime.datetime, end: datetime.datetime,
         intervals.append((prev, next))
         prev = next + datetime.timedelta(days=1)
 
+    intervals.reverse()
     return intervals
 
 
@@ -185,9 +193,8 @@ def initialize_installation_info():
     r = requests.get(f"{BASE_API_URL}/sites/list.json",
                      {'api_key': SETTING_API_KEY},
                      timeout=REQUEST_TIMEOUT)
-    print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
     if r.status_code != 200:
-        # print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
+        print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
         return False
 
     # Parse response
@@ -334,6 +341,9 @@ def get_power_api(site: str, startTime: datetime, endTime: datetime):
                 print(
                     f'power,site={site},type={type} w={float(point["value"]) * multiplier} {to_unix_timestamp(point["date"])}',
                     flush=False)
+                # log_err(
+                #     f'power,site={site},type={type} w={float(point["value"]) * multiplier} {to_unix_timestamp(point["date"])}'
+                #     )
     return True
 
 
@@ -460,7 +470,7 @@ def reduce_and_check(nr_calls: int):
     if nr_calls == 0:
         nr_calls = HISTORY_SCRAPER_MAX_API_CALLS
         now = datetime.datetime.now()
-        time.sleep(now.replace(hour=24, minute=0, second=0) -
+        time.sleep(now.replace(hour=23, minute=59, second=59) -
                    now)  # Wait till next day
     return nr_calls
 
@@ -481,9 +491,13 @@ def get_production_duration():
         startDate = site['dataPeriod']['startDate']
         endDate = site['dataPeriod']['endDate']
         if startDate is not None and endDate is not None:
-            ranges[str(site['siteId'])] = (datetime.datetime.strptime(
-                startDate,
-                '%Y-%m-%d'), datetime.datetime.strptime(endDate, '%Y-%m-%d'))
+            ranges[str(site['siteId'])] = (
+                max(
+                    datetime.datetime.strptime(startDate, '%Y-%m-%d'),
+                    datetime.datetime.now() - datetime.timedelta(days=MAX_HISTORY_MONTHS*30)
+                ),
+                datetime.datetime.strptime(endDate, '%Y-%m-%d'))
+
     return ranges
 
 
@@ -496,6 +510,7 @@ def scrape_full_history():
     remaining_API_calls = reduce_and_check(HISTORY_SCRAPER_MAX_API_CALLS)
 
     for site in SITE_IDS:
+        log_err(f'Scraping full history for site: {site}')
         ranges = ranges[site]
 
         # API limited to 1 month time range (apparently 1 month == 28 days)
@@ -505,6 +520,7 @@ def scrape_full_history():
                                         min(powerLastUpdates[site], ranges[1]),
                                         28):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
+            log_err(f'Scraping power api for months: {month}')
             while not get_power_api(site, month[0], month[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
@@ -516,6 +532,7 @@ def scrape_full_history():
         for month in get_date_intervals(
                 ranges[0], min(energyLastUpdates[site], ranges[1]), 28):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
+            log_err(f'Scraping energy api for months: {month}')
             while not get_energy_api(site, month[0], month[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
@@ -528,6 +545,7 @@ def scrape_full_history():
                                        min(dataLastUpdates[site], ranges[1]),
                                        7):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
+            log_err(f'Scraping energy api for weeks: {week}')
             while not get_data_api(site, week[0], week[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)

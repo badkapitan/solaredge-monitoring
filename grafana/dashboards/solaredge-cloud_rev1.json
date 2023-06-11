@@ -751,7 +751,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"124652119\" and r[\"id\"] != \"124652107\" and r[\"id\"] != \"124652102\")\n|> max()\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> max()\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -877,7 +877,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"124652119\" and r[\"id\"] != \"124652107\" and r[\"id\"] != \"124652102\")\n|> aggregateWindow(every: 15m0s, fn: max, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: 15m0s, fn: max, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -1222,6 +1222,6 @@
   "timezone": "",
   "title": "SolarEdge Cloud",
   "uid": "-YG1drwMz",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
