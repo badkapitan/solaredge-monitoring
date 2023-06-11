@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+
+  influxdb:
+    image: influxdb:2.6-alpine
+    env_file:
+      - influxv2.env
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - influxdb:/var/lib/influxdb2:rw
+    networks:
+      - common_network
+    ports:
+      - "8086:8086"
+
+  telegraf:
+    image: telegraf:1.25-alpine
+    depends_on:
+      - influxdb
+    volumes:
+      # Mount for telegraf config
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf/solarEdgeCloudScraper.py:/var/lib/telegraf/solarEdgeCloudScraper.py:ro
+    build:
+      context: .
+      dockerfile: telegraf/Dockerfile
+    networks:
+      - common_network
+    env_file:
+      - influxv2.env
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: solaredge-grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+    networks:
+      - common_network
+    depends_on:
+      - influxdb
+
+volumes:
+  grafana_data:
+  influxdb:
+
+networks:
+  common_network:
+    driver: bridge

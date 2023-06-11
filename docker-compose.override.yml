@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  grafana:
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_PATHS_LOGS=/var/log/grafana/
+      - GF_LOG_MODE=console file
+      - GF_LOG_LEVEL=info
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_NAME=SolarEdge Monitoring
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Editor
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/solaredge-cloud_rev1.json
+    ports:
+      - 3000:3000
