@@ -38,9 +38,22 @@ SITE_LOGIN_URL = 'https://monitoring.solaredge.com/solaredge-apigw/api/login'
 BASE_API_URL = 'https://monitoringapi.solaredge.com'
 REQUEST_TIMEOUT = 60
 SITE_COOKIE_FILE = 'solaredge.com.cookies'
+
+# Local files created by this program
+
 LAST_SUCCESSFUL_UPDATE_FILE = 'lastupdated'
 INSTALLATION_INFO_FILE = 'installinfo'
 SCRAPELOG_FILE = 'scrape.log'
+
+# ------------------------------ Scraping parameters ---------------------------
+
+HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
+UPDATE_WINDOW_START = datetime.datetime.strptime('9:00:00', '%H:%M:%S').time()
+UPDATE_WINDOW_END = datetime.datetime.strptime('9:59:59', '%H:%M:%S').time()
+MAX_HISTORY_MONTHS = 1
+
+# ------------------------------ Global variables ------------------------------
+
 SITE_IDS = []
 SITES = ''  # Same as SITE_IDS but as string
 SERIALS = {}
@@ -48,11 +61,6 @@ SITE_TIMEZONES = {}
 HAS_OPTIMIZERS = {}
 LAST_UPDATES = {}
 HOME_DIR = ''
-HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
-# Data is updated once a day at this interval. Assumed to be at the ~end of the day.
-UPDATE_INTERVAL_HOUR = 14
-UPDATE_INTERVAL_MIN = 50
-MAX_HISTORY_MONTHS = 1
 
 # ------------------------------ Utils -----------------------------------------
 
@@ -159,7 +167,7 @@ def format_L_data(data, label: str):
     return f",I_{label}_AC_Voltage={data['acVoltage']},I_{label}_AC_Current={data['acCurrent']},I_{label}_AC_PF={data['cosPhi']},I_{label}_AC_Freq={data['acFrequency']},I_{label}_AC_VAR={data['reactivePower']},I_{label}_AC_VA={data['apparentPower']},I_{label}_AC_Power={data['activePower']}"
 
 
-# --------------------------- Main() helpers ------------------------------
+# --------------------------- Main() helpers -----------------------------------
 
 
 # Should only be called once
@@ -246,9 +254,8 @@ def initialize_last_updated():
     else:
         # Well it must be intialized at something
         # Note: will not auto scrape full history
-        resetDate = datetime.datetime.now().replace(
-            hour=UPDATE_INTERVAL_HOUR, minute=UPDATE_INTERVAL_MIN,
-            second=0) - datetime.timedelta(days=1)
+        # TODO: get date from of last available data from influxdb
+        resetDate = UPDATE_WINDOW_END - datetime.timedelta(days=1)
         site_dict = {}
         for site in SITE_IDS:
             site_dict[site] = resetDate
@@ -315,12 +322,13 @@ def update_all_data(endTime: datetime.datetime):
         f.write(repr(LAST_UPDATES))
 
 
-# --------------------------- Data gathering ----------------------------
+# --------------------------- Data gathering -----------------------------------
 
 # API
 
 
 def get_power_api(site: str, startTime: datetime, endTime: datetime):
+    log_err(f"Quering power api with endTime: {endTime}")
     r = requests.get(f"{BASE_API_URL}/site/{site}/powerDetails.json", {
         'startTime': format_datetime_url(startTime),
         'endTime': format_datetime_url(endTime),
@@ -462,11 +470,12 @@ def get_playback_data_site(days, site: str):
 # However this has to be queried manually every 15 minutes (cloud update interval) and not all panels update at the same time so some bookkeeping is required.
 # As the current script only updates once a day this has been omitted. Unfortunately this data is not included in the playback data.
 
-# ------------------------- History Scraper ------------------------------
+# ------------------------- History Scraper ------------------------------------
 
 
 def reduce_and_check(nr_calls: int):
     nr_calls -= 1
+    log_err(f'Remaining api calls: {nr_calls}')
     if nr_calls == 0:
         nr_calls = HISTORY_SCRAPER_MAX_API_CALLS
         now = datetime.datetime.now()
@@ -490,6 +499,7 @@ def get_production_duration():
     for site in json['datePeriodList']['siteEnergyList']:
         startDate = site['dataPeriod']['startDate']
         endDate = site['dataPeriod']['endDate']
+        log_err(endDate)
         if startDate is not None and endDate is not None:
             ranges[str(site['siteId'])] = (
                 max(
@@ -553,60 +563,63 @@ def scrape_full_history():
         flush()
 
 
-# -----------------------------------------------------------------------
-# Main()
-# -----------------------------------------------------------------------
+# ---------------------------------- Main --------------------------------------
 
-initialize_home_dir()
+def main():
 
-if not initialize_installation_info():
-    print_err('Failed to initialize installation info, exiting.')
-    flush_and_exit(1)
+    initialize_home_dir()
 
-initialize_last_updated()
+    if not initialize_installation_info():
+        print_err('Failed to initialize installation info, exiting.')
+        flush_and_exit(1)
 
-if len(sys.argv) > 2:
-    print_err(f'Unknown CLI arguments {str(sys.argv)}, existing.')
-    flush_and_exit(1)
+    initialize_last_updated()
 
-if len(sys.argv) == 2:
-    # History scrape loop
-    if sys.argv[1] == 'history':
-        scrape_full_history()
-        flush_and_exit(0)
-    # Debug loop
-    elif sys.argv[1] == 'debug':
-        update_all_data(datetime.datetime.now().replace(
-            hour=UPDATE_INTERVAL_HOUR, minute=UPDATE_INTERVAL_MIN))
-        flush_and_exit(0)
+    if len(sys.argv) > 2:
+        print_err(f'Unknown CLI arguments {str(sys.argv)}, existing.')
+        flush_and_exit(1)
 
-    print_err(f'Unknown CLI argument {sys.argv[1]}, existing.')
-    flush_and_exit(1)
+    if len(sys.argv) == 2:
+        # History scrape loop
+        if sys.argv[1] == 'history':
+            scrape_full_history()
+            flush_and_exit(0)
+        # Debug loop
+        elif sys.argv[1] == 'debug':
+            update_all_data(datetime.datetime.now())
+            flush_and_exit(0)
 
-# Daily update loop
-while True:
-    # Always run at the end of the day ~midnight to get the most accurate daily data.
-    # Assumption: it will be dark by midnight
-    print_err(f'Main loop begin')
-    now = datetime.datetime.now()
-    nextUpdate = now.replace(hour=UPDATE_INTERVAL_HOUR,
-                             minute=UPDATE_INTERVAL_MIN,
-                             second=0)
-    if now.hour >= UPDATE_INTERVAL_HOUR and now.minute >= UPDATE_INTERVAL_MIN:
-        nextUpdate += datetime.timedelta(days=1)
+        print_err(f'Unknown CLI argument {sys.argv[1]}, existing.')
+        flush_and_exit(1)
 
-    timeUntilUpdate = nextUpdate - datetime.datetime.now()
+    print_err(f'Update window set to: {UPDATE_WINDOW_START} - {UPDATE_WINDOW_END}')
 
-    print_err(f'Time left until next update: {timeUntilUpdate} ')
-    secondsUntilUpdate = timeUntilUpdate.total_seconds() if timeUntilUpdate.total_seconds() > 0 else 0
-    time.sleep(secondsUntilUpdate)
+    # Daily update loop
+    while True:
+        # Always run at the end of the day ~midnight to get the most accurate daily data.
+        # Assumption: it will be dark by midnight
+        print_err(f'Main loop begin')
 
-    update_all_data(datetime.datetime.now().replace(hour=UPDATE_INTERVAL_HOUR,
-                                                    minute=UPDATE_INTERVAL_MIN,
-                                                    second=0))
+        now = datetime.datetime.now().time()
 
-    print_err(f'Metrics scraped, sleeping for 10 mins')
-    time.sleep(600)
+        if UPDATE_WINDOW_START < now and now < UPDATE_WINDOW_END:
+            update_all_data(datetime.datetime.now())
+            print_err(f'Metrics scraped, sleeping for 15 mins')
+            time.sleep(15*60)
+        else:
+            # datetime way of getting seconds left from now until update window opens: (UPDATE_WINDOW_START - now).seconds
+            secondsUntilUpdate = (
+                    datetime.datetime.combine(datetime.datetime.min, UPDATE_WINDOW_START)
+                    -
+                    datetime.datetime.combine(datetime.datetime.min, now)
+                ).seconds
+            # datetime way converting seconds to nice, human readable time
+            timeUntilUpdate = datetime.timedelta(seconds=secondsUntilUpdate)
+            print_err(f'Time left until update window opens: {timeUntilUpdate}. Sleeping until then')
 
-    print_err(f'Main loop end')
-flush_and_exit(0)
+            time.sleep(secondsUntilUpdate)
+
+    flush_and_exit(0)
+
+if __name__ == '__main__':
+    main()
