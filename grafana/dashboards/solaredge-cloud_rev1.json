@@ -1282,7 +1282,7 @@
                   "mode": "none"
                 },
                 "thresholdsStyle": {
-                  "mode": "off"
+                  "mode": "dashed"
                 }
               },
               "mappings": [],
@@ -1290,12 +1290,16 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "transparent",
                     "value": null
                   },
                   {
-                    "color": "red",
-                    "value": 80
+                    "color": "dark-red",
+                    "value": 207
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 253
                   }
                 ]
               },
@@ -1321,6 +1325,12 @@
                     "value": {
                       "fixedColor": "text",
                       "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "custom.thresholdsStyle",
+                    "value": {
+                      "mode": "off"
                     }
                   }
                 ]
@@ -1410,7 +1420,7 @@
                   "mode": "none"
                 },
                 "thresholdsStyle": {
-                  "mode": "off"
+                  "mode": "dashed"
                 }
               },
               "mappings": [],
@@ -1418,12 +1428,16 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "transparent",
                     "value": null
                   },
                   {
-                    "color": "red",
-                    "value": 80
+                    "color": "dark-red",
+                    "value": 49.5
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 50.5
                   }
                 ]
               },
@@ -1449,6 +1463,12 @@
                     "value": {
                       "fixedColor": "text",
                       "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "custom.thresholdsStyle",
+                    "value": {
+                      "mode": "off"
                     }
                   }
                 ]
@@ -1629,6 +1649,6 @@
   "timezone": "",
   "title": "SolarEdge Cloud",
   "uid": "-YG1drwMz",
-  "version": 18,
+  "version": 19,
   "weekStart": ""
 }

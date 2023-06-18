@@ -48,9 +48,9 @@ SCRAPELOG_FILE = 'scrape.log'
 # ------------------------------ Scraping parameters ---------------------------
 
 HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
-UPDATE_WINDOW_START = datetime.datetime.strptime('9:00:00', '%H:%M:%S').time()
-UPDATE_WINDOW_END = datetime.datetime.strptime('19:00:0', '%H:%M:%S').time()
-MAX_HISTORY_MONTHS = 1
+UPDATE_WINDOW_START = datetime.datetime.strptime('09:00:00', '%H:%M:%S').time()
+UPDATE_WINDOW_END = datetime.datetime.strptime('19:00:00', '%H:%M:%S').time()
+HISTORY_SCRAPER_MAX_HISTORY_DAYS = 1*28
 
 # ------------------------------ Global variables ------------------------------
 
@@ -122,18 +122,17 @@ def get_date_intervals(start: datetime.datetime, end: datetime.datetime,
                        maxDays: int):
     intervals = []
 
-    days = (end - start).days
+    days = (end - start).days + 1
     prev = start
     while True:
-        if days <= (maxDays + 1):
+        if days <= maxDays:
             intervals.append((prev, prev + datetime.timedelta(days=days)))
             break
 
-        days -= maxDays + 1  # +1 because we want no overlaps between the intervals
-
+        days -= maxDays
         next = prev + datetime.timedelta(days=maxDays)
         intervals.append((prev, next))
-        prev = next + datetime.timedelta(days=1)
+        prev = next
 
     intervals.reverse()
     return intervals
@@ -520,9 +519,10 @@ def get_production_duration():
             ranges[str(site['siteId'])] = (
                 max(
                     datetime.datetime.strptime(startDate, '%Y-%m-%d'),
-                    datetime.datetime.now() - datetime.timedelta(days=MAX_HISTORY_MONTHS*30)
+                    datetime.datetime.now() - datetime.timedelta(days=HISTORY_SCRAPER_MAX_HISTORY_DAYS)
                 ),
-                datetime.datetime.strptime(endDate, '%Y-%m-%d'))
+                datetime.datetime.strptime(endDate, '%Y-%m-%d')
+            )
 
     return ranges
 
