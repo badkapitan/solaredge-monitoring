@@ -865,7 +865,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1153,8 +1154,8 @@
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_SOLAREDGE_CLOUD}"
+            "type": "datasource",
+            "uid": "-- Mixed --"
           },
           "fieldConfig": {
             "defaults": {
@@ -1199,7 +1200,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1209,7 +1211,31 @@
               },
               "unit": "volt"
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sun altitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "text",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
             "h": 9,
@@ -1238,9 +1264,148 @@
               },
               "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_L1_AC_Voltage\" or r[\"_field\"] == \"I_L2_AC_Voltage\" or r[\"_field\"] == \"I_L3_AC_Voltage\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
               "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "fetzerch-sunandmoon-datasource",
+                "uid": "${DS_SUN_AND_MOON}"
+              },
+              "hide": false,
+              "refId": "B",
+              "target": [
+                "sun_altitude"
+              ]
             }
           ],
           "title": "AC Voltage",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Mixed --"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "rothz"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sun altitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "text",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 56
+          },
+          "id": 25,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${DS_SOLAREDGE_CLOUD}"
+              },
+              "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_L1_AC_Freq\" or r[\"_field\"] == \"I_L2_AC_Freq\" or r[\"_field\"] == \"I_L3_AC_Freq\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "fetzerch-sunandmoon-datasource",
+                "uid": "${DS_SUN_AND_MOON}"
+              },
+              "hide": false,
+              "refId": "B",
+              "target": [
+                "sun_altitude"
+              ]
+            }
+          ],
+          "title": "AC Frequency",
           "type": "timeseries"
         }
       ],
@@ -1374,6 +1539,6 @@
   "timezone": "",
   "title": "SolarEdge Cloud",
   "uid": "-YG1drwMz",
-  "version": 15,
+  "version": 16,
   "weekStart": ""
 }

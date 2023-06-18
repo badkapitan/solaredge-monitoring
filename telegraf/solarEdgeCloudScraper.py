@@ -404,6 +404,8 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
             return False
 
         # Parse request
+        # log_err("DATA RESPONSE:")
+        # log_err(str(r.json()))
         for value in r.json()['data']['telemetries']:
             date = value['date']
             # Note: not all data is logged; see Json/API for all available options
@@ -418,7 +420,7 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
             if 'L3Data' in value:
                 conditionalData += format_L_data(value['L3Data'], 'L3')
             print(
-                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]}{conditionalData} {to_unix_timestamp(date)}',
+                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]},I_operationMode={value["operationMode"]},I_groundFaultResistance={value["groundFaultResistance"]}{conditionalData} {to_unix_timestamp(date)}',
                 flush=False)
     return True
 
@@ -512,7 +514,6 @@ def get_production_duration():
     for site in json['datePeriodList']['siteEnergyList']:
         startDate = site['dataPeriod']['startDate']
         endDate = site['dataPeriod']['endDate']
-        log_err(endDate)
         if startDate is not None and endDate is not None:
             ranges[str(site['siteId'])] = (
                 max(
