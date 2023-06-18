@@ -49,7 +49,7 @@ SCRAPELOG_FILE = 'scrape.log'
 
 HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
 UPDATE_WINDOW_START = datetime.datetime.strptime('9:00:00', '%H:%M:%S').time()
-UPDATE_WINDOW_END = datetime.datetime.strptime('9:59:59', '%H:%M:%S').time()
+UPDATE_WINDOW_END = datetime.datetime.strptime('19:00:0', '%H:%M:%S').time()
 MAX_HISTORY_MONTHS = 1
 
 # ------------------------------ Global variables ------------------------------
@@ -61,6 +61,7 @@ SITE_TIMEZONES = {}
 HAS_OPTIMIZERS = {}
 LAST_UPDATES = {}
 HOME_DIR = ''
+USED_API_CALLS = 0
 
 # ------------------------------ Utils -----------------------------------------
 
@@ -183,7 +184,7 @@ def initialize_home_dir():
 
 # Should only be called once
 def initialize_installation_info():
-    global SITES, SERIALS, SITE_TIMEZONES, SITE_IDS, HAS_OPTIMIZERS
+    global SITES, SERIALS, SITE_TIMEZONES, SITE_IDS, HAS_OPTIMIZERS, USED_API_CALLS
 
     # Check if the info is already cached
     if os.path.exists(os.path.join(HOME_DIR, INSTALLATION_INFO_FILE)):
@@ -198,6 +199,7 @@ def initialize_installation_info():
             return True
 
     # Get sites
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/sites/list.json",
                      {'api_key': SETTING_API_KEY},
                      timeout=REQUEST_TIMEOUT)
@@ -216,6 +218,7 @@ def initialize_installation_info():
     # Get serials
     # Note: 1 call per site
     for site in SITE_IDS:
+        USED_API_CALLS += 1
         r = requests.get(f"{BASE_API_URL}/site/{site}/inventory",
                          {'api_key': SETTING_API_KEY},
                          timeout=REQUEST_TIMEOUT)
@@ -288,8 +291,9 @@ def ensure_logged_in(session: requests.Session, function):
 
 
 def update_all_data(endTime: datetime.datetime):
+    global USED_API_CALLS
     playbackTimeStamps = LAST_UPDATES['playback']
-    print_err(f'Updating optimizers data')
+    print_err(f'Updating optimizers data (used api calls: {USED_API_CALLS})')
     for site in SITE_IDS:
         if HAS_OPTIMIZERS[site]:
             nr_days = max((endTime - playbackTimeStamps[site]).days,
@@ -299,17 +303,17 @@ def update_all_data(endTime: datetime.datetime):
                 days = list(range(-nr_days, 0, 1))
             if get_playback_data_site(days, site):
                 playbackTimeStamps[site] = endTime
-    print_err(f'Updating power data')
+    print_err(f'Updating power data (used api calls: {USED_API_CALLS})')
     powerTimeStamps = LAST_UPDATES['power']
     for site in SITE_IDS:
         if get_power_api(site, powerTimeStamps[site], endTime):
             powerTimeStamps[site] = endTime
-    print_err(f'Updating energy data')
+    print_err(f'Updating energy data (used api calls: {USED_API_CALLS})')
     energyTimeStamps = LAST_UPDATES['energy']
     for site in SITE_IDS:
         if get_energy_api(site, energyTimeStamps[site], endTime):
             energyTimeStamps[site] = endTime
-    print_err(f'Updating data data')
+    print_err(f'Updating data data (used api calls: {USED_API_CALLS})')
     dataTimeStamps = LAST_UPDATES['data']
     for site in SITE_IDS:
         if get_data_api(site, dataTimeStamps[site], endTime):
@@ -328,7 +332,8 @@ def update_all_data(endTime: datetime.datetime):
 
 
 def get_power_api(site: str, startTime: datetime, endTime: datetime):
-    log_err(f"Quering power api with endTime: {endTime}")
+    global USED_API_CALLS
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/site/{site}/powerDetails.json", {
         'startTime': format_datetime_url(startTime),
         'endTime': format_datetime_url(endTime),
@@ -356,6 +361,8 @@ def get_power_api(site: str, startTime: datetime, endTime: datetime):
 
 
 def get_energy_api(site: str, startTime: datetime, endTime: datetime):
+    global USED_API_CALLS
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/site/{site}/energyDetails.json", {
         'timeUnit': 'QUARTER_OF_AN_HOUR',
         'startTime': format_datetime_url(startTime),
@@ -382,7 +389,9 @@ def get_energy_api(site: str, startTime: datetime, endTime: datetime):
 
 # This data is similar as what can be read from modbus
 def get_data_api(site: str, startTime: datetime, endTime: datetime):
+    global USED_API_CALLS
     for serial in SERIALS[site]:
+        USED_API_CALLS += 1
         r = requests.get(f"{BASE_API_URL}/equipment/{site}/{serial}/data", {
             'startTime': format_datetime_url(startTime),
             'endTime': format_datetime_url(endTime),
@@ -420,12 +429,14 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
 # Based on: https://gist.github.com/dragoshenron/0920411a2f3e53c214be0a26f51c53e2
 # Note: only available if you have optimizers
 def get_playback_data_site(days, site: str):
+    global USED_API_CALLS
     PANELS_DAILY_DATA = '4'
     PANELS_WEEKLY_DATA = '5'
     timeUnit = PANELS_WEEKLY_DATA if len(
         days) > 1 or days[0] != 0 else PANELS_DAILY_DATA
 
     session = requests.session()
+    USED_API_CALLS += 1
     panels = ensure_logged_in(
         session, lambda: session.post(
             BASE_SITE_PANELS_URL,
@@ -485,6 +496,8 @@ def reduce_and_check(nr_calls: int):
 
 
 def get_production_duration():
+    global USED_API_CALLS
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/sites/{SITES}/dataPeriod.json",
                      {'api_key': SETTING_API_KEY},
                      timeout=REQUEST_TIMEOUT)
@@ -566,6 +579,7 @@ def scrape_full_history():
 # ---------------------------------- Main --------------------------------------
 
 def main():
+    global UPDATE_WINDOW_START, UPDATE_WINDOW_END, USED_API_CALLS
 
     initialize_home_dir()
 
@@ -598,13 +612,13 @@ def main():
     while True:
         # Always run at the end of the day ~midnight to get the most accurate daily data.
         # Assumption: it will be dark by midnight
-        print_err(f'Main loop begin')
+        print_err(f'Main loop begin. Used api calls: {USED_API_CALLS}')
 
         now = datetime.datetime.now().time()
 
         if UPDATE_WINDOW_START < now and now < UPDATE_WINDOW_END:
             update_all_data(datetime.datetime.now())
-            print_err(f'Metrics scraped, sleeping for 15 mins')
+            print_err(f'Metrics scraped, used api calls: {USED_API_CALLS}, sleeping for 15 mins')
             time.sleep(15*60)
         else:
             # datetime way of getting seconds left from now until update window opens: (UPDATE_WINDOW_START - now).seconds
