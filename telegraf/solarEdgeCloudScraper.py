@@ -258,7 +258,7 @@ def initialize_last_updated():
         # Well it must be intialized at something
         # Note: will not auto scrape full history
         # TODO: get date from of last available data from influxdb
-        resetDate = UPDATE_WINDOW_END - datetime.timedelta(days=1)
+        resetDate = datetime.datetime.combine(datetime.datetime.now(), UPDATE_WINDOW_START) - datetime.timedelta(days=1)
         site_dict = {}
         for site in SITE_IDS:
             site_dict[site] = resetDate
@@ -419,8 +419,10 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
                 conditionalData += format_L_data(value['L2Data'], 'L2')
             if 'L3Data' in value:
                 conditionalData += format_L_data(value['L3Data'], 'L3')
+            if 'groundFaultResistance' in value:
+                conditionalData += f',I_groundFaultResistance={value["groundFaultResistance"]}'
             print(
-                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]},I_operationMode={value["operationMode"]},I_groundFaultResistance={value["groundFaultResistance"]}{conditionalData} {to_unix_timestamp(date)}',
+                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]},I_operationMode={value["operationMode"]}{conditionalData} {to_unix_timestamp(date)}',
                 flush=False)
     return True
 
@@ -569,7 +571,7 @@ def scrape_full_history():
                                        min(dataLastUpdates[site], ranges[1]),
                                        7):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
-            log_err(f'Scraping energy api for weeks: {week}')
+            log_err(f'Scraping data api for weeks: {week}')
             while not get_data_api(site, week[0], week[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
@@ -597,7 +599,12 @@ def main():
     if len(sys.argv) == 2:
         # History scrape loop
         if sys.argv[1] == 'history':
-            scrape_full_history()
+            try:
+                scrape_full_history()
+            except Exception as exc:
+                log_err(f'Exception occured: {exc}')
+                log_err(f'Exception traceback: {exc.__traceback__}')
+                raise
             flush_and_exit(0)
         # Debug loop
         elif sys.argv[1] == 'debug':
