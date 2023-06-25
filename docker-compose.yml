@@ -4,6 +4,7 @@ services:
 
   proxy:
     image: proxy:latest
+    container_name: solaredge-proxy
     build:
       context: .
       dockerfile: proxy/Dockerfile
@@ -55,8 +56,8 @@ services:
     restart: unless-stopped
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/datasources:/etc/grafana/provisioning/datasources/
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards/
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources:rw
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:rw
     networks:
       - common_network
     depends_on:
