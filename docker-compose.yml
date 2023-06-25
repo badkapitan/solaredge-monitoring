@@ -2,12 +2,30 @@ version: '3.9'
 
 services:
 
+  proxy:
+    image: proxy:latest
+    build:
+      context: .
+      dockerfile: proxy/Dockerfile
+    environment:
+      DOMAIN: localhost
+      TARGET_PORT: 3000
+      TARGET_HOST: grafana
+      SSL_PORT: 443
+    networks:
+      - common_network
+    ports:
+      - "3443:443"
+    depends_on:
+      - grafana
+
   influxdb:
     image: influxdb:2.6-alpine
     container_name: solaredge-influxdb
     restart: unless-stopped
     volumes:
       # Mount for influxdb data directory and configuration
+      - ./influxdb:/mnt:rw
       - influxdb:/var/lib/influxdb2:rw
     networks:
       - common_network
