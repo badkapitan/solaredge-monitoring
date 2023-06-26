@@ -27,6 +27,7 @@ services:
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=myadmintoken
       - UPDATE_WINDOW_START=05:00:00
       - UPDATE_WINDOW_END=19:00:00
+      - UPDATE_INTERVAL=60
   influxdb:
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup

@@ -51,6 +51,7 @@ HISTORY_SCRAPER_MAX_API_CALLS = 100         # Limit is 300/day, take some margin
 HISTORY_SCRAPER_MAX_HISTORY_DAYS = 1*28     # Scraping full history uses 7-8 api calls per scrapped month
 UPDATE_WINDOW_START = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_START', '09:00:00'), '%H:%M:%S').time()
 UPDATE_WINDOW_END = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_END', '19:00:00'), '%H:%M:%S').time()
+UPDATE_INTERVAL = int(os.environ.get('UPDATE_INTERVAL', '120'))  # Daily data update interval in minutes
 
 # ------------------------------ Global variables ------------------------------
 
@@ -614,7 +615,7 @@ def main():
         print_err(f'Unknown CLI argument {sys.argv[1]}, existing.')
         flush_and_exit(1)
 
-    print_err(f'Update window set to: {UPDATE_WINDOW_START} - {UPDATE_WINDOW_END}')
+    print_err(f'Update window set to: {UPDATE_WINDOW_START} - {UPDATE_WINDOW_END} with {UPDATE_INTERVAL} min interval')
 
     # Daily update loop
     while True:
@@ -626,8 +627,8 @@ def main():
 
         if UPDATE_WINDOW_START < now and now < UPDATE_WINDOW_END:
             update_all_data(datetime.datetime.now())
-            print_err(f'Metrics scraped, used api calls: {USED_API_CALLS}, sleeping for 15 mins')
-            time.sleep(15*60)
+            print_err(f'Metrics scraped, used api calls: {USED_API_CALLS}, sleeping for {UPDATE_INTERVAL} mins')
+            time.sleep(UPDATE_INTERVAL*60)
         else:
             # datetime way of getting seconds left from now until update window opens: (UPDATE_WINDOW_START - now).seconds
             secondsUntilUpdate = (
