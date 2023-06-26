@@ -3,16 +3,15 @@ version: '3.9'
 services:
   grafana:
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=password
-      - GF_USERS_ALLOW_SIGN_UP=false
       - GF_PATHS_LOGS=/var/log/grafana/
       - GF_LOG_MODE=console file
       - GF_LOG_LEVEL=info
-      # - GF_AUTH_DISABLE_LOGIN_FORM=true
-      # - GF_AUTH_ANONYMOUS_ENABLED=true
-      # - GF_AUTH_ANONYMOUS_ORG_NAME=SolarEdge Monitoring
-      # - GF_AUTH_ANONYMOUS_ORG_ROLE=Editor
+      # To get admin/editor access toggle comment on following 3 lines (GF_SECURITY_ADMIN_USER, GF_SECURITY_ADMIN_PASSWORD, GF_AUTH_DISABLE_LOGIN_FORM)
+      # - GF_SECURITY_ADMIN_USER=admin
+      # - GF_SECURITY_ADMIN_PASSWORD=password
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/solaredge-cloud_rev1.json
       - GF_INSTALL_PLUGINS=fetzerch-sunandmoon-datasource
       - TZ=Europe/Warsaw
@@ -26,6 +25,9 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=myorg
       - DOCKER_INFLUXDB_INIT_BUCKET=solaredge_cloud
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=myadmintoken
+      - UPDATE_WINDOW_START=05:00:00
+      - UPDATE_WINDOW_END=19:00:00
+      - UPDATE_INTERVAL=60
   influxdb:
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup

@@ -38,9 +38,23 @@ SITE_LOGIN_URL = 'https://monitoring.solaredge.com/solaredge-apigw/api/login'
 BASE_API_URL = 'https://monitoringapi.solaredge.com'
 REQUEST_TIMEOUT = 60
 SITE_COOKIE_FILE = 'solaredge.com.cookies'
+
+# Local files created by this program
+
 LAST_SUCCESSFUL_UPDATE_FILE = 'lastupdated'
 INSTALLATION_INFO_FILE = 'installinfo'
 SCRAPELOG_FILE = 'scrape.log'
+
+# ------------------------------ Scraping parameters ---------------------------
+
+HISTORY_SCRAPER_MAX_API_CALLS = 100         # Limit is 300/day, take some margin
+HISTORY_SCRAPER_MAX_HISTORY_DAYS = 1*28     # Scraping full history uses 7-8 api calls per scrapped month
+UPDATE_WINDOW_START = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_START', '09:00:00'), '%H:%M:%S').time()
+UPDATE_WINDOW_END = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_END', '19:00:00'), '%H:%M:%S').time()
+UPDATE_INTERVAL = int(os.environ.get('UPDATE_INTERVAL', '120'))  # Daily data update interval in minutes
+
+# ------------------------------ Global variables ------------------------------
+
 SITE_IDS = []
 SITES = ''  # Same as SITE_IDS but as string
 SERIALS = {}
@@ -48,11 +62,7 @@ SITE_TIMEZONES = {}
 HAS_OPTIMIZERS = {}
 LAST_UPDATES = {}
 HOME_DIR = ''
-HISTORY_SCRAPER_MAX_API_CALLS = 100  # Limit is 300/day, take some margin
-# Data is updated once a day at this interval. Assumed to be at the ~end of the day.
-UPDATE_INTERVAL_HOUR = 14
-UPDATE_INTERVAL_MIN = 50
-MAX_HISTORY_MONTHS = 1
+USED_API_CALLS = 0
 
 # ------------------------------ Utils -----------------------------------------
 
@@ -113,18 +123,17 @@ def get_date_intervals(start: datetime.datetime, end: datetime.datetime,
                        maxDays: int):
     intervals = []
 
-    days = (end - start).days
+    days = (end - start).days + 1
     prev = start
     while True:
-        if days <= (maxDays + 1):
+        if days <= maxDays:
             intervals.append((prev, prev + datetime.timedelta(days=days)))
             break
 
-        days -= maxDays + 1  # +1 because we want no overlaps between the intervals
-
+        days -= maxDays
         next = prev + datetime.timedelta(days=maxDays)
         intervals.append((prev, next))
-        prev = next + datetime.timedelta(days=1)
+        prev = next
 
     intervals.reverse()
     return intervals
@@ -159,7 +168,7 @@ def format_L_data(data, label: str):
     return f",I_{label}_AC_Voltage={data['acVoltage']},I_{label}_AC_Current={data['acCurrent']},I_{label}_AC_PF={data['cosPhi']},I_{label}_AC_Freq={data['acFrequency']},I_{label}_AC_VAR={data['reactivePower']},I_{label}_AC_VA={data['apparentPower']},I_{label}_AC_Power={data['activePower']}"
 
 
-# --------------------------- Main() helpers ------------------------------
+# --------------------------- Main() helpers -----------------------------------
 
 
 # Should only be called once
@@ -175,7 +184,7 @@ def initialize_home_dir():
 
 # Should only be called once
 def initialize_installation_info():
-    global SITES, SERIALS, SITE_TIMEZONES, SITE_IDS, HAS_OPTIMIZERS
+    global SITES, SERIALS, SITE_TIMEZONES, SITE_IDS, HAS_OPTIMIZERS, USED_API_CALLS
 
     # Check if the info is already cached
     if os.path.exists(os.path.join(HOME_DIR, INSTALLATION_INFO_FILE)):
@@ -190,6 +199,7 @@ def initialize_installation_info():
             return True
 
     # Get sites
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/sites/list.json",
                      {'api_key': SETTING_API_KEY},
                      timeout=REQUEST_TIMEOUT)
@@ -208,6 +218,7 @@ def initialize_installation_info():
     # Get serials
     # Note: 1 call per site
     for site in SITE_IDS:
+        USED_API_CALLS += 1
         r = requests.get(f"{BASE_API_URL}/site/{site}/inventory",
                          {'api_key': SETTING_API_KEY},
                          timeout=REQUEST_TIMEOUT)
@@ -246,9 +257,8 @@ def initialize_last_updated():
     else:
         # Well it must be intialized at something
         # Note: will not auto scrape full history
-        resetDate = datetime.datetime.now().replace(
-            hour=UPDATE_INTERVAL_HOUR, minute=UPDATE_INTERVAL_MIN,
-            second=0) - datetime.timedelta(days=1)
+        # TODO: get date from of last available data from influxdb
+        resetDate = datetime.datetime.combine(datetime.datetime.now(), UPDATE_WINDOW_START) - datetime.timedelta(days=1)
         site_dict = {}
         for site in SITE_IDS:
             site_dict[site] = resetDate
@@ -281,8 +291,9 @@ def ensure_logged_in(session: requests.Session, function):
 
 
 def update_all_data(endTime: datetime.datetime):
+    global USED_API_CALLS
     playbackTimeStamps = LAST_UPDATES['playback']
-    print_err(f'Updating optimizers data')
+    print_err(f'Updating optimizers data (used api calls: {USED_API_CALLS})')
     for site in SITE_IDS:
         if HAS_OPTIMIZERS[site]:
             nr_days = max((endTime - playbackTimeStamps[site]).days,
@@ -292,17 +303,17 @@ def update_all_data(endTime: datetime.datetime):
                 days = list(range(-nr_days, 0, 1))
             if get_playback_data_site(days, site):
                 playbackTimeStamps[site] = endTime
-    print_err(f'Updating power data')
+    print_err(f'Updating power data (used api calls: {USED_API_CALLS})')
     powerTimeStamps = LAST_UPDATES['power']
     for site in SITE_IDS:
         if get_power_api(site, powerTimeStamps[site], endTime):
             powerTimeStamps[site] = endTime
-    print_err(f'Updating energy data')
+    print_err(f'Updating energy data (used api calls: {USED_API_CALLS})')
     energyTimeStamps = LAST_UPDATES['energy']
     for site in SITE_IDS:
         if get_energy_api(site, energyTimeStamps[site], endTime):
             energyTimeStamps[site] = endTime
-    print_err(f'Updating data data')
+    print_err(f'Updating data data (used api calls: {USED_API_CALLS})')
     dataTimeStamps = LAST_UPDATES['data']
     for site in SITE_IDS:
         if get_data_api(site, dataTimeStamps[site], endTime):
@@ -315,12 +326,14 @@ def update_all_data(endTime: datetime.datetime):
         f.write(repr(LAST_UPDATES))
 
 
-# --------------------------- Data gathering ----------------------------
+# --------------------------- Data gathering -----------------------------------
 
 # API
 
 
 def get_power_api(site: str, startTime: datetime, endTime: datetime):
+    global USED_API_CALLS
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/site/{site}/powerDetails.json", {
         'startTime': format_datetime_url(startTime),
         'endTime': format_datetime_url(endTime),
@@ -348,6 +361,8 @@ def get_power_api(site: str, startTime: datetime, endTime: datetime):
 
 
 def get_energy_api(site: str, startTime: datetime, endTime: datetime):
+    global USED_API_CALLS
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/site/{site}/energyDetails.json", {
         'timeUnit': 'QUARTER_OF_AN_HOUR',
         'startTime': format_datetime_url(startTime),
@@ -374,7 +389,9 @@ def get_energy_api(site: str, startTime: datetime, endTime: datetime):
 
 # This data is similar as what can be read from modbus
 def get_data_api(site: str, startTime: datetime, endTime: datetime):
+    global USED_API_CALLS
     for serial in SERIALS[site]:
+        USED_API_CALLS += 1
         r = requests.get(f"{BASE_API_URL}/equipment/{site}/{serial}/data", {
             'startTime': format_datetime_url(startTime),
             'endTime': format_datetime_url(endTime),
@@ -387,6 +404,8 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
             return False
 
         # Parse request
+        # log_err("DATA RESPONSE:")
+        # log_err(str(r.json()))
         for value in r.json()['data']['telemetries']:
             date = value['date']
             # Note: not all data is logged; see Json/API for all available options
@@ -400,8 +419,10 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
                 conditionalData += format_L_data(value['L2Data'], 'L2')
             if 'L3Data' in value:
                 conditionalData += format_L_data(value['L3Data'], 'L3')
+            if 'groundFaultResistance' in value:
+                conditionalData += f',I_groundFaultResistance={value["groundFaultResistance"]}'
             print(
-                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]}{conditionalData} {to_unix_timestamp(date)}',
+                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]},I_operationMode={value["operationMode"]}{conditionalData} {to_unix_timestamp(date)}',
                 flush=False)
     return True
 
@@ -412,12 +433,14 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
 # Based on: https://gist.github.com/dragoshenron/0920411a2f3e53c214be0a26f51c53e2
 # Note: only available if you have optimizers
 def get_playback_data_site(days, site: str):
+    global USED_API_CALLS
     PANELS_DAILY_DATA = '4'
     PANELS_WEEKLY_DATA = '5'
     timeUnit = PANELS_WEEKLY_DATA if len(
         days) > 1 or days[0] != 0 else PANELS_DAILY_DATA
 
     session = requests.session()
+    USED_API_CALLS += 1
     panels = ensure_logged_in(
         session, lambda: session.post(
             BASE_SITE_PANELS_URL,
@@ -462,11 +485,12 @@ def get_playback_data_site(days, site: str):
 # However this has to be queried manually every 15 minutes (cloud update interval) and not all panels update at the same time so some bookkeeping is required.
 # As the current script only updates once a day this has been omitted. Unfortunately this data is not included in the playback data.
 
-# ------------------------- History Scraper ------------------------------
+# ------------------------- History Scraper ------------------------------------
 
 
 def reduce_and_check(nr_calls: int):
     nr_calls -= 1
+    log_err(f'Remaining api calls: {nr_calls}')
     if nr_calls == 0:
         nr_calls = HISTORY_SCRAPER_MAX_API_CALLS
         now = datetime.datetime.now()
@@ -476,6 +500,8 @@ def reduce_and_check(nr_calls: int):
 
 
 def get_production_duration():
+    global USED_API_CALLS
+    USED_API_CALLS += 1
     r = requests.get(f"{BASE_API_URL}/sites/{SITES}/dataPeriod.json",
                      {'api_key': SETTING_API_KEY},
                      timeout=REQUEST_TIMEOUT)
@@ -494,9 +520,10 @@ def get_production_duration():
             ranges[str(site['siteId'])] = (
                 max(
                     datetime.datetime.strptime(startDate, '%Y-%m-%d'),
-                    datetime.datetime.now() - datetime.timedelta(days=MAX_HISTORY_MONTHS*30)
+                    datetime.datetime.now() - datetime.timedelta(days=HISTORY_SCRAPER_MAX_HISTORY_DAYS)
                 ),
-                datetime.datetime.strptime(endDate, '%Y-%m-%d'))
+                datetime.datetime.strptime(endDate, '%Y-%m-%d')
+            )
 
     return ranges
 
@@ -545,7 +572,7 @@ def scrape_full_history():
                                        min(dataLastUpdates[site], ranges[1]),
                                        7):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
-            log_err(f'Scraping energy api for weeks: {week}')
+            log_err(f'Scraping data api for weeks: {week}')
             while not get_data_api(site, week[0], week[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
@@ -553,60 +580,69 @@ def scrape_full_history():
         flush()
 
 
-# -----------------------------------------------------------------------
-# Main()
-# -----------------------------------------------------------------------
+# ---------------------------------- Main --------------------------------------
 
-initialize_home_dir()
+def main():
+    global UPDATE_WINDOW_START, UPDATE_WINDOW_END, USED_API_CALLS
 
-if not initialize_installation_info():
-    print_err('Failed to initialize installation info, exiting.')
-    flush_and_exit(1)
+    initialize_home_dir()
 
-initialize_last_updated()
+    if not initialize_installation_info():
+        print_err('Failed to initialize installation info, exiting.')
+        flush_and_exit(1)
 
-if len(sys.argv) > 2:
-    print_err(f'Unknown CLI arguments {str(sys.argv)}, existing.')
-    flush_and_exit(1)
+    initialize_last_updated()
 
-if len(sys.argv) == 2:
-    # History scrape loop
-    if sys.argv[1] == 'history':
-        scrape_full_history()
-        flush_and_exit(0)
-    # Debug loop
-    elif sys.argv[1] == 'debug':
-        update_all_data(datetime.datetime.now().replace(
-            hour=UPDATE_INTERVAL_HOUR, minute=UPDATE_INTERVAL_MIN))
-        flush_and_exit(0)
+    if len(sys.argv) > 2:
+        print_err(f'Unknown CLI arguments {str(sys.argv)}, existing.')
+        flush_and_exit(1)
 
-    print_err(f'Unknown CLI argument {sys.argv[1]}, existing.')
-    flush_and_exit(1)
+    if len(sys.argv) == 2:
+        # History scrape loop
+        if sys.argv[1] == 'history':
+            try:
+                scrape_full_history()
+            except Exception as exc:
+                log_err(f'Exception occured: {exc}')
+                log_err(f'Exception traceback: {exc.__traceback__}')
+                raise
+            flush_and_exit(0)
+        # Debug loop
+        elif sys.argv[1] == 'debug':
+            update_all_data(datetime.datetime.now())
+            flush_and_exit(0)
 
-# Daily update loop
-while True:
-    # Always run at the end of the day ~midnight to get the most accurate daily data.
-    # Assumption: it will be dark by midnight
-    print_err(f'Main loop begin')
-    now = datetime.datetime.now()
-    nextUpdate = now.replace(hour=UPDATE_INTERVAL_HOUR,
-                             minute=UPDATE_INTERVAL_MIN,
-                             second=0)
-    if now.hour >= UPDATE_INTERVAL_HOUR and now.minute >= UPDATE_INTERVAL_MIN:
-        nextUpdate += datetime.timedelta(days=1)
+        print_err(f'Unknown CLI argument {sys.argv[1]}, existing.')
+        flush_and_exit(1)
 
-    timeUntilUpdate = nextUpdate - datetime.datetime.now()
+    print_err(f'Update window set to: {UPDATE_WINDOW_START} - {UPDATE_WINDOW_END} with {UPDATE_INTERVAL} min interval')
 
-    print_err(f'Time left until next update: {timeUntilUpdate} ')
-    secondsUntilUpdate = timeUntilUpdate.total_seconds() if timeUntilUpdate.total_seconds() > 0 else 0
-    time.sleep(secondsUntilUpdate)
+    # Daily update loop
+    while True:
+        # Always run at the end of the day ~midnight to get the most accurate daily data.
+        # Assumption: it will be dark by midnight
+        print_err(f'Main loop begin. Used api calls: {USED_API_CALLS}')
 
-    update_all_data(datetime.datetime.now().replace(hour=UPDATE_INTERVAL_HOUR,
-                                                    minute=UPDATE_INTERVAL_MIN,
-                                                    second=0))
+        now = datetime.datetime.now().time()
 
-    print_err(f'Metrics scraped, sleeping for 10 mins')
-    time.sleep(600)
+        if UPDATE_WINDOW_START < now and now < UPDATE_WINDOW_END:
+            update_all_data(datetime.datetime.now())
+            print_err(f'Metrics scraped, used api calls: {USED_API_CALLS}, sleeping for {UPDATE_INTERVAL} mins')
+            time.sleep(UPDATE_INTERVAL*60)
+        else:
+            # datetime way of getting seconds left from now until update window opens: (UPDATE_WINDOW_START - now).seconds
+            secondsUntilUpdate = (
+                    datetime.datetime.combine(datetime.datetime.min, UPDATE_WINDOW_START)
+                    -
+                    datetime.datetime.combine(datetime.datetime.min, now)
+                ).seconds
+            # datetime way converting seconds to nice, human readable time
+            timeUntilUpdate = datetime.timedelta(seconds=secondsUntilUpdate)
+            print_err(f'Time left until update window opens: {timeUntilUpdate}. Sleeping until then')
 
-    print_err(f'Main loop end')
-flush_and_exit(0)
+            time.sleep(secondsUntilUpdate)
+
+    flush_and_exit(0)
+
+if __name__ == '__main__':
+    main()
