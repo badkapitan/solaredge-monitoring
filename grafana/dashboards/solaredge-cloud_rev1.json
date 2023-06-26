@@ -10,7 +10,7 @@
     },
     {
       "name": "DS_SUN_AND_MOON",
-      "label": "Sun and Moon",
+      "label": "Sun_and_Moon",
       "description": "",
       "type": "datasource",
       "pluginId": "fetzerch-sunandmoon-datasource",
@@ -1549,44 +1549,44 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_SOLAREDGE_CLOUD}"
         },
+        "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)",
         "description": "Site id, see SolarEdge's website",
         "hide": 0,
+        "includeAll": false,
+        "multi": false,
         "name": "site",
-        "options": [
-          {
-            "selected": false,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
+        "options": [],
+        "query": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "textbox"
+        "sort": 0,
+        "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_SOLAREDGE_CLOUD}"
         },
+        "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)",
         "description": "Inverter serial",
         "hide": 0,
+        "includeAll": false,
+        "multi": false,
         "name": "sn",
-        "options": [
-          {
-            "selected": false,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
+        "options": [],
+        "query": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "textbox"
+        "sort": 0,
+        "type": "query"
       },
       {
         "current": {
@@ -1608,8 +1608,8 @@
       {
         "current": {
           "selected": false,
-          "text": "Sun and Moon",
-          "value": "Sun and Moon"
+          "text": "Sun_and_Moon",
+          "value": "Sun_and_Moon"
         },
         "hide": 2,
         "includeAll": false,
@@ -1637,6 +1637,6 @@
   "timezone": "",
   "title": "SolarEdge Cloud",
   "uid": "-YG1drwMz",
-  "version": 19,
+  "version": 25,
   "weekStart": ""
 }

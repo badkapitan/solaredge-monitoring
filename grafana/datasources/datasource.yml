@@ -26,7 +26,7 @@ datasources:
       token: myadmintoken
     editable: true
   - orgId: 1
-    name: Sun and Moon
+    name: sun_and_moon
     type: fetzerch-sunandmoon-datasource
     access:       proxy
     jsonData:
