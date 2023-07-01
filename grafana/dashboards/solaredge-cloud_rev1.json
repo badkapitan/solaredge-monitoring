@@ -21,12 +21,6 @@
   "__requires": [
     {
       "type": "panel",
-      "id": "barchart",
-      "name": "Bar chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
       "id": "bargauge",
       "name": "Bar gauge",
       "version": ""
@@ -413,23 +407,35 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "fillOpacity": 80,
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 50,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 1,
+            "lineInterpolation": "linear",
+            "lineWidth": 0,
+            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -455,45 +461,59 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "I_AC_Energy_WH"
+              "options": "wh selfconsumption"
             },
             "properties": [
               {
-                "id": "displayName",
-                "value": "Production"
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "wh production"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "line"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 11,
+        "w": 12,
         "x": 0,
         "y": 6
       },
       "hideTimeOverride": true,
       "id": 6,
       "options": {
-        "barRadius": 0,
-        "barWidth": 0.97,
-        "fullHighlight": false,
-        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "auto",
-        "showValue": "auto",
-        "stacking": "none",
         "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        },
-        "xTickLabelRotation": 0,
-        "xTickLabelSpacing": 0
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "pluginVersion": "9.5.3",
       "targets": [
@@ -518,7 +538,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"data\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Energy_WH\")\n|> aggregateWindow(every: 24h, fn: spread, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\", \"host\"])",
+          "query": "import \"date\"\nimport \"timezone\"\noption location = timezone.location(name: \"Europe/Warsaw\")\nfrom(bucket: \"${bucket}\")\n  |> range(start: date.sub(from: date.truncate(t: v.timeRangeStart, unit: 1d), d:1d), stop:  date.add(to: date.truncate(t: v.timeRangeStop, unit: 1d), d:1d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wh\")\n  |> filter(fn: (r) => r[\"site\"] == \"2493538\")\n  |> filter(fn: (r) => r[\"type\"] == \"feedin\" or r[\"type\"] == \"production\" or r[\"type\"] == \"selfconsumption\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\", \"host\"])\n  |> aggregateWindow(every: 24h, offset: -1s, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -540,7 +560,170 @@
         }
       ],
       "title": "Daily production",
-      "type": "barchart"
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 50,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "wh selfconsumption"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "wh consumption"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "line"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "hideTimeOverride": true,
+      "id": 27,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"date\"\nimport \"timezone\"\noption location = timezone.location(name: \"Europe/Warsaw\")\nfrom(bucket: \"${bucket}\")\n  |> range(start: date.sub(from: date.truncate(t: v.timeRangeStart, unit: 1d), d:1d), stop:  date.add(to: date.truncate(t: v.timeRangeStop, unit: 1d), d:1d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wh\")\n  |> filter(fn: (r) => r[\"site\"] == \"2493538\")\n  |> filter(fn: (r) => r[\"type\"] == \"consumption\" or r[\"type\"] == \"purchased\" or r[\"type\"] == \"selfconsumption\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\", \"host\"])\n  |> aggregateWindow(every: 24h, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Daily consumption",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -628,7 +811,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 17
       },
       "id": 16,
       "options": {
@@ -733,7 +916,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 25
       },
       "id": 19,
       "options": {
@@ -808,7 +991,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 35
       },
       "id": 10,
       "panels": [
@@ -897,7 +1080,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 41
           },
           "id": 21,
           "options": {
@@ -1045,10 +1228,10 @@
             ]
           },
           "gridPos": {
-            "h": 7,
+            "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 49
           },
           "id": 8,
           "options": {
@@ -1167,10 +1350,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 7,
+            "h": 8,
             "w": 24,
             "x": 0,
-            "y": 47
+            "y": 57
           },
           "id": 26,
           "options": {
@@ -1327,10 +1510,10 @@
             ]
           },
           "gridPos": {
-            "h": 9,
+            "h": 8,
             "w": 24,
             "x": 0,
-            "y": 54
+            "y": 65
           },
           "id": 22,
           "options": {
@@ -1464,10 +1647,10 @@
             ]
           },
           "gridPos": {
-            "h": 9,
+            "h": 8,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 73
           },
           "id": 25,
           "options": {
