@@ -51,6 +51,12 @@
     },
     {
       "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
       "version": ""
@@ -89,6 +95,9 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Power (current/last)",
           "mappings": [],
           "max": 3100,
@@ -102,11 +111,11 @@
               },
               {
                 "color": "orange",
-                "value": 70
+                "value": 50
               },
               {
                 "color": "red",
-                "value": 85
+                "value": 75
               }
             ]
           },
@@ -247,6 +256,9 @@
       },
       "id": 14,
       "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -255,9 +267,7 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "textMode": "auto"
       },
       "pluginVersion": "9.5.3",
       "targets": [
@@ -304,7 +314,7 @@
         }
       ],
       "transparent": true,
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -340,6 +350,9 @@
       },
       "id": 12,
       "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -348,9 +361,7 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "textMode": "auto"
       },
       "pluginVersion": "9.5.3",
       "targets": [
@@ -397,7 +408,7 @@
         }
       ],
       "transparent": true,
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -418,7 +429,7 @@
             "axisSoftMin": 0,
             "barAlignment": 0,
             "drawStyle": "bars",
-            "fillOpacity": 50,
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -581,7 +592,7 @@
             "axisSoftMin": 0,
             "barAlignment": 0,
             "drawStyle": "bars",
-            "fillOpacity": 50,
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -892,7 +903,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-GrYlRd"
+            "mode": "continuous-BlYlRd"
           },
           "mappings": [],
           "thresholds": {
@@ -920,16 +931,14 @@
       },
       "id": 19,
       "options": {
-        "displayMode": "basic",
+        "displayMode": "gradient",
         "minVizHeight": 10,
         "minVizWidth": 0,
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "fields": "",
-          "values": false
+          "values": true
         },
         "showUnfilled": true,
         "valueMode": "color"
@@ -957,7 +966,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\n|> max()\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])\n",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> max()\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])\n",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -1041,7 +1050,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1080,7 +1090,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 41
+            "y": 36
           },
           "id": 21,
           "options": {
@@ -1155,8 +1165,8 @@
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_SOLAREDGE_CLOUD}"
+            "type": "datasource",
+            "uid": "-- Mixed --"
           },
           "fieldConfig": {
             "defaults": {
@@ -1198,7 +1208,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "orange",
@@ -1224,6 +1235,51 @@
                     "value": "Temp"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sun altitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "text",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 80
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.thresholdsStyle",
+                    "value": {
+                      "mode": "off"
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -1231,7 +1287,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 49
+            "y": 44
           },
           "id": 8,
           "options": {
@@ -1288,15 +1344,26 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "datasource": {
+                "type": "fetzerch-sunandmoon-datasource",
+                "uid": "${DS_SUN_AND_MOON}"
+              },
+              "hide": false,
+              "refId": "B",
+              "target": [
+                "sun_altitude"
+              ]
             }
           ],
-          "title": "Temperature",
+          "title": "Inverter Temperature",
           "type": "timeseries"
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_SOLAREDGE_CLOUD}"
+            "type": "datasource",
+            "uid": "-- Mixed --"
           },
           "fieldConfig": {
             "defaults": {
@@ -1341,19 +1408,44 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               },
               "unit": "ohm"
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sun altitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "text",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 57
+            "y": 52
           },
           "id": 26,
           "options": {
@@ -1410,6 +1502,17 @@
                 ]
               ],
               "tags": []
+            },
+            {
+              "datasource": {
+                "type": "fetzerch-sunandmoon-datasource",
+                "uid": "${DS_SUN_AND_MOON}"
+              },
+              "hide": false,
+              "refId": "B",
+              "target": [
+                "sun_altitude"
+              ]
             }
           ],
           "title": "Ground Fault Resistance",
@@ -1463,7 +1566,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "dark-red",
@@ -1513,7 +1617,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 65
+            "y": 60
           },
           "id": 22,
           "options": {
@@ -1600,7 +1704,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "dark-red",
@@ -1650,7 +1755,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 73
+            "y": 68
           },
           "id": 25,
           "options": {
