@@ -1,6 +1,13 @@
 version: '3.9'
 
 services:
+  proxy:
+    environment:
+      - DOMAIN=localhost
+      - ALT_NAMES=localhost
+      - TARGET_PORT=3000
+      - TARGET_HOST=grafana
+      - SSL_PORT=443
   grafana:
     environment:
       - GF_PATHS_LOGS=/var/log/grafana/

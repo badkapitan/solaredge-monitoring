@@ -126,7 +126,7 @@
       "gridPos": {
         "h": 6,
         "w": 4,
-        "x": 8,
+        "x": 0,
         "y": 0
       },
       "id": 24,
@@ -189,7 +189,7 @@
       "gridPos": {
         "h": 6,
         "w": 4,
-        "x": 12,
+        "x": 4,
         "y": 0
       },
       "id": 23,
@@ -221,6 +221,100 @@
       ],
       "transparent": true,
       "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE_CLOUD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "continuous-YlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 28,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"date\"\nimport \"timezone\"\noption location = timezone.location(name: \"Europe/Warsaw\")\nfrom(bucket: \"${bucket}\")\n  |> range(start: date.truncate(t: v.timeRangeStart, unit:1d), stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wh\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\", \"host\"])\n  |> truncateTimeColumn(unit: 1d)\n  |> group(columns: [\"_value\"], mode: \"except\")\n  |> sum()\n  |> group(columns: [\"_value\", \"_time\"], mode: \"except\")\n  |> max()\n",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Max daily values",
+      "transparent": true,
+      "type": "stat"
     },
     {
       "datasource": {
@@ -466,7 +560,7 @@
               }
             ]
           },
-          "unit": "watt"
+          "unit": "watth"
         },
         "overrides": [
           {
@@ -629,7 +723,7 @@
               }
             ]
           },
-          "unit": "watt"
+          "unit": "watth"
         },
         "overrides": [
           {
@@ -1058,7 +1152,8 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "watt"
             },
             "overrides": [
               {
