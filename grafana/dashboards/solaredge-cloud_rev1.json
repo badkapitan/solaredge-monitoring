@@ -1263,6 +1263,166 @@
             "type": "datasource",
             "uid": "-- Mixed --"
           },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "watt"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sun altitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "text",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 44
+          },
+          "id": 29,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.5.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${DS_SOLAREDGE_CLOUD}"
+              },
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "import \"date\"\nimport \"experimental\"\ncurrent = from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"2493538\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"current\")\n\nbest = from(bucket: \"${bucket}\")\n|> range(start: 2023-06-04T22:00:00Z, stop: 2023-06-05T21:59:59Z)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"2493538\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"best\")\n",
+              "queryType": "randomWalk",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "datasource": {
+                "type": "fetzerch-sunandmoon-datasource",
+                "uid": "${DS_SUN_AND_MOON}"
+              },
+              "hide": false,
+              "refId": "B",
+              "target": [
+                "sun_altitude"
+              ]
+            }
+          ],
+          "title": "Per panel power - best day comparison",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Mixed --"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -1382,7 +1542,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 44
+            "y": 52
           },
           "id": 8,
           "options": {
@@ -1540,7 +1700,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 52
+            "y": 60
           },
           "id": 26,
           "options": {
@@ -1661,8 +1821,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "dark-red",
@@ -1712,7 +1871,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 60
+            "y": 68
           },
           "id": 22,
           "options": {
@@ -1799,8 +1958,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "dark-red",
@@ -1850,7 +2008,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 68
+            "y": 76
           },
           "id": 25,
           "options": {
