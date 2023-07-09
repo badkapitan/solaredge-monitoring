@@ -991,6 +991,186 @@
     },
     {
       "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 9
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "text",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "production best"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "hideTimeOverride": true,
+      "id": 30,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE_CLOUD}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "current = from(bucket: \"${bucket}\")\n|> range(start: today(), stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"power\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\" and r[\"type\"] == \"production\")\n|> map(fn:(r) => ({_time: r._time, \"production current\": r._value}))\n\n|> yield(name: \"current\")\n\nbest = from(bucket: \"${bucket}\")\n|> range(start: 2023-06-03, stop: 2023-06-04)\n|> filter(fn: (r) => r[\"_measurement\"] == \"power\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\" and r[\"type\"] == \"production\")\n|> map(fn:(r) => ({_time: r._time, \"production best\": r._value}))\n|> timeShift(duration: duration(v: (uint(v: today()) - uint(v: 2023-06-03))))\n|> yield(name: \"best\")\n",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "fetzerch-sunandmoon-datasource",
+            "uid": "${DS_SUN_AND_MOON}"
+          },
+          "hide": false,
+          "refId": "B",
+          "target": [
+            "sun_altitude"
+          ]
+        }
+      ],
+      "timeFrom": "now/d",
+      "timeTo": "now/d",
+      "title": "Production today vs best",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
         "type": "influxdb",
         "uid": "${DS_SOLAREDGE_CLOUD}"
       },
@@ -1021,7 +1201,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 33
       },
       "id": 19,
       "options": {
@@ -1094,7 +1274,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 43
       },
       "id": 10,
       "panels": [
@@ -1185,7 +1365,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 44
           },
           "id": 21,
           "options": {
@@ -1338,6 +1518,24 @@
                     }
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*-best/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "dash": [
+                        10,
+                        10
+                      ],
+                      "fill": "dash"
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -1345,8 +1543,9 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 44
+            "y": 52
           },
+          "hideTimeOverride": true,
           "id": 29,
           "options": {
             "legend": {
@@ -1383,7 +1582,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "import \"date\"\nimport \"experimental\"\ncurrent = from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"2493538\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"current\")\n\nbest = from(bucket: \"${bucket}\")\n|> range(start: 2023-06-04T22:00:00Z, stop: 2023-06-05T21:59:59Z)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"2493538\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"best\")\n",
+              "query": "import \"date\"\nimport \"experimental\"\ncurrent = from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"current\")\n\nbest = from(bucket: \"${bucket}\")\n|> range(start: 2023-06-04T22:00:00Z, stop: 2023-06-05T21:59:59Z)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"best\")\n",
               "queryType": "randomWalk",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1415,6 +1614,8 @@
               ]
             }
           ],
+          "timeFrom": "now/d",
+          "timeTo": "now/d",
           "title": "Per panel power - best day comparison",
           "type": "timeseries"
         },
@@ -1542,7 +1743,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 52
+            "y": 60
           },
           "id": 8,
           "options": {
@@ -1700,7 +1901,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 60
+            "y": 68
           },
           "id": 26,
           "options": {
@@ -1821,7 +2022,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "dark-red",
@@ -1871,7 +2073,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 68
+            "y": 76
           },
           "id": 22,
           "options": {
@@ -1958,7 +2160,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "dark-red",
@@ -2008,7 +2211,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 76
+            "y": 84
           },
           "id": 25,
           "options": {
@@ -2178,6 +2381,6 @@
   "timezone": "",
   "title": "SolarEdge Cloud",
   "uid": "-YG1drwMz",
-  "version": 25,
+  "version": 1,
   "weekStart": ""
 }
