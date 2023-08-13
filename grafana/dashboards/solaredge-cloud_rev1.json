@@ -1580,7 +1580,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "import \"date\"\nimport \"experimental\"\ncurrent = from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"current\")\n\nbest = from(bucket: \"${bucket}\")\n|> range(start: 2023-06-04T22:00:00Z, stop: 2023-06-05T21:59:59Z)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n|> experimental.alignTime(alignTo: v.timeRangeStart)\n|> yield(name: \"best\")\n",
+              "query": "import \"date\"\n\nbestDay = from(bucket: \"${bucket}\")\n  |> range(start: 2023-06-05, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\" and r[\"_field\"] == \"wh\" and r[\"site\"] == \"${site}\" and r[\"type\"] == \"production\")\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> truncateTimeColumn(unit: 1d)\n  |> group(columns: [\"_value\"], mode: \"except\")\n  |> sum()\n  |> group(columns: [\"_value\", \"_time\"], mode: \"except\")\n  |> max()\n  |> findRecord(fn: (key) => true, idx: 0)\n\ncurrent = from(bucket: \"${bucket}\")\n  |> range(start: today(), stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n  |> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n  |> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n  |> yield(name: \"current\")\n \nbest = from(bucket: \"${bucket}\")\n  |> range(start: bestDay._time, stop: date.add(to: bestDay._time, d: 2d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n  |> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n  |> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n  |> timeShift(duration: duration(v: (uint(v: today()) - uint(v: bestDay._time))))\n  |> yield(name: \"best\")\n",
               "queryType": "randomWalk",
               "refId": "A",
               "resultFormat": "time_series",
@@ -2362,7 +2362,7 @@
     ]
   },
   "time": {
-    "from": "now/d",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
