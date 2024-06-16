@@ -147,11 +147,11 @@ If you are using macOS, please be aware that you need to set up Docker manually 
 
 I would like to acknowledge the following sources for inspiring and contributing to this project:
 
-1. Nelis Oostens for their original solution for Solar Edge inverters, which served as an inspiration for creating my own dashboards and setup. You can find their work at [Nelis Oostens SolarEdge Monitoring](http://oostens.me/posts/solaredge-se3000h-monitoring/).
+1. Nelis Oostens for his original solution for Solar Edge inverters, which served as an inspiration for creating my own dashboards and setup. You can find his work at [Nelis Oostens SolarEdge Monitoring](http://oostens.me/posts/solaredge-se3000h-monitoring/).
 
-2. Matjaž Bravc for their remarkable work on the SolarEdge Monitoring Demo. Their contributions provided valuable insights and guidance for aspects of this project. Check out their project here: [Matjaž Bravc SolarEdge Monitoring Demo](https://github.com/matjazbravc/SolarEdge.Monitoring.Demo).
+2. Matjaž Bravc for his remarkable work on the SolarEdge Monitoring Demo. Their contributions provided valuable insights and guidance for aspects of this project. Check out his project here: [Matjaž Bravc SolarEdge Monitoring Demo](https://github.com/matjazbravc/SolarEdge.Monitoring.Demo).
 
-3. Joe Manna for sharing their experience in monitoring a multi-inverter SolarEdge system. Their insights and solutions have been helpful in the development of this project. You can read about it here: [Monitoring a Multi-Inverter SolarEdge System](https://www.packetmischief.ca/2022/01/09/monitoring-a-multi-inverter-solaredge-system/).
+3. Joe Manna for sharing his experience in monitoring a multi-inverter SolarEdge system. Their insights and solutions have been helpful in the development of this project. You can read about it here: [Monitoring a Multi-Inverter SolarEdge System](https://www.packetmischief.ca/2022/01/09/monitoring-a-multi-inverter-solaredge-system/).
 
 
 This project also draws inspiration from my personal experience with my own solar panels. The desire to create a customized program to better monitor energy generation from my panels was a driving force behind this initiative. I wanted to develop a solution that would allow me to track energy production more effectively and gain a deeper understanding of how my panels perform.
