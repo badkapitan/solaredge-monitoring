@@ -647,7 +647,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "import \"date\"\n\nbestDay = from(bucket: \"${bucket}\")\n  |> range(start: date.truncate(t: today(), unit: 1y), stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\" and r[\"_field\"] == \"wh\" and r[\"site\"] == \"${site}\" and r[\"type\"] == \"production\")\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> truncateTimeColumn(unit: 1d)\n  |> group(columns: [\"_value\"], mode: \"except\")\n  |> sum()\n  |> group(columns: [\"_value\", \"_time\"], mode: \"except\")\n  |> max()\n  |> findRecord(fn: (key) => true, idx: 0)\n\ncurrent = from(bucket: \"${bucket}\")\n  |> range(start: today(), stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\" and r[\"type\"] == \"production\")\n  |> map(fn:(r) => ({_time: r._time, \"production current\": r._value}))\n  |> yield(name: \"current\")\n\nbest = from(bucket: \"${bucket}\")\n  |> range(start: bestDay._time, stop: date.add(to: bestDay._time, d: 1d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\" and r[\"type\"] == \"production\")\n  |> map(fn:(r) => ({_time: r._time, \"production best\": r._value}))\n  |> timeShift(duration: duration(v: (uint(v: today()) - uint(v: bestDay._time))))\n  |> yield(name: \"best\")\n",
+          "query": "import \"date\"\n\ncurrent = from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\" and r[\"type\"] == \"production\")\n  |> map(fn:(r) => ({_time: r._time, \"production current\": r._value}))\n  |> yield(name: \"current\")\n\nbestDay = from(bucket: \"${bucket}\")\n  |> range(start: date.sub(from: v.timeRangeStart, d: 1y), stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\" and r[\"_field\"] == \"wh\" and r[\"site\"] == \"${site}\" and r[\"type\"] == \"production\")\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> truncateTimeColumn(unit: 1d)\n  |> group(columns: [\"_value\"], mode: \"except\")\n  |> sum()\n  |> group(columns: [\"_value\", \"_time\"], mode: \"except\")\n  |> max()\n  |> findRecord(fn: (key) => true, idx: 0)\n\nbest = from(bucket: \"${bucket}\")\n  |> range(start: bestDay._time, stop: date.add(to: bestDay._time, d: 1d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\" and r[\"type\"] == \"production\")\n  |> map(fn:(r) => ({_time: r._time, \"production best\": r._value}))\n  |> timeShift(duration: duration(v: (uint(v: date.truncate(t: v.timeRangeStop, unit: 1d)) - uint(v: bestDay._time))))\n  |> yield(name: \"best\")\n",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -679,7 +679,6 @@
           ]
         }
       ],
-      "timeFrom": "now/d",
       "timeTo": "now/d",
       "title": "Production today vs best",
       "type": "timeseries"
@@ -1580,7 +1579,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "import \"date\"\n\nbestDay = from(bucket: \"${bucket}\")\n  |> range(start: 2023-06-05, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\" and r[\"_field\"] == \"wh\" and r[\"site\"] == \"${site}\" and r[\"type\"] == \"production\")\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> truncateTimeColumn(unit: 1d)\n  |> group(columns: [\"_value\"], mode: \"except\")\n  |> sum()\n  |> group(columns: [\"_value\", \"_time\"], mode: \"except\")\n  |> max()\n  |> findRecord(fn: (key) => true, idx: 0)\n\ncurrent = from(bucket: \"${bucket}\")\n  |> range(start: today(), stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n  |> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n  |> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n  |> yield(name: \"current\")\n \nbest = from(bucket: \"${bucket}\")\n  |> range(start: bestDay._time, stop: date.add(to: bestDay._time, d: 2d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n  |> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n  |> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n  |> timeShift(duration: duration(v: (uint(v: today()) - uint(v: bestDay._time))))\n  |> yield(name: \"best\")\n",
+              "query": "import \"date\"\n\ncurrent = from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n  |> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n  |> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-current\"}))\n  |> yield(name: \"current\")\n \nbestDay = from(bucket: \"${bucket}\")\n  |> range(start: 2023-06-05, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\" and r[\"_field\"] == \"wh\" and r[\"site\"] == \"${site}\" and r[\"type\"] == \"production\")\n  |> keep(columns: [\"_value\", \"_time\"])\n  |> truncateTimeColumn(unit: 1d)\n  |> group(columns: [\"_value\"], mode: \"except\")\n  |> sum()\n  |> group(columns: [\"_value\", \"_time\"], mode: \"except\")\n  |> max()\n  |> findRecord(fn: (key) => true, idx: 0)\n\nbest = from(bucket: \"${bucket}\")\n  |> range(start: bestDay._time, stop: date.add(to: bestDay._time, d: 1d))\n  |> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n  |> filter(fn: (r) => r[\"id\"] != \"181087139\" and r[\"id\"] != \"181087208\")\n  |> map(fn:(r) => ({_time: r._time, _value: r._value, id: r.id+\"-best\"}))\n  |> timeShift(duration: duration(v: (uint(v: date.truncate(t: v.timeRangeStop, unit: 1d)) - uint(v: bestDay._time))))\n  |> yield(name: \"best\")\n",
               "queryType": "randomWalk",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1612,7 +1611,6 @@
               ]
             }
           ],
-          "timeFrom": "now/d",
           "timeTo": "now/d",
           "title": "Per panel power - best day comparison",
           "type": "timeseries"
@@ -2362,8 +2360,8 @@
     ]
   },
   "time": {
-    "from": "now-7d",
-    "to": "now"
+    "from": "now/d",
+    "to": "now/d"
   },
   "timepicker": {
     "refresh_intervals": [
