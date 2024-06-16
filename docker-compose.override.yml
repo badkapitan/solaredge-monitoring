@@ -26,6 +26,8 @@ services:
       - 3000:3000
   telegraf:
     environment:
+      - SOLAREDGE_SITE_ID=
+      - SOLAREDGE_INVERTER_SN=
       - SOLAREDGE_API_KEY=
       - SOLAREDGE_SITE_USERNAME=
       - SOLAREDGE_SITE_PW=
@@ -35,6 +37,8 @@ services:
       - UPDATE_WINDOW_START=05:00:00
       - UPDATE_WINDOW_END=19:00:00
       - UPDATE_INTERVAL=60
+      - INFLUXDB_MODBUS_BUCKET=solaredge
+      - INVERTER_MODBUS_ADDRESS=
   influxdb:
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
