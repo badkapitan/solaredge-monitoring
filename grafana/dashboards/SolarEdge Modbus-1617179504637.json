@@ -1,0 +1,2067 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 2,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "displayName": "Frequency",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-blue",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 1
+              },
+              {
+                "color": "super-light-blue",
+                "value": 49.94
+              },
+              {
+                "color": "dark-red",
+                "value": 50.06
+              }
+            ]
+          },
+          "unit": "hertz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -1m)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Frequency\")\n|> filter(fn: (r) => r[\"aggType\"] != \"max\" and r[\"aggType\"] != \"min\")\n|> last()\n|> drop(columns: [\"_measurement\", \"_field\", \"_start\", \"_stop\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "10s",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "displayName": "Cos Phi (Power factor)",
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "noValue": "Cos Phi (Power factor)",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -1m)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_PF\")\n|> filter(fn: (r) => r[\"aggType\"] != \"max\" and r[\"aggType\"] != \"min\")\n|> last()\n|> drop(columns: [\"_measurement\", \"_field\", \"_start\", \"_stop\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "10s",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "displayName": "DC Current",
+          "mappings": [],
+          "noValue": "DC Current",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -1m)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_DC_Current\")\n|> filter(fn: (r) => r[\"aggType\"] != \"max\" and r[\"aggType\"] != \"min\")\n|> last()\n|> drop(columns: [\"_measurement\", \"_field\", \"_start\", \"_stop\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "10s",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "displayName": "Total AC Current",
+          "mappings": [],
+          "noValue": "Total AC Current",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -1m)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Current\")\n|> filter(fn: (r) => r[\"aggType\"] != \"max\" and r[\"aggType\"] != \"min\")\n|> last()\n|> drop(columns: [\"_measurement\", \"_field\", \"_start\", \"_stop\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "10s",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "displayName": "Production",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 17,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Energy_WH\")\n|> spread()\n|> drop(columns: [\"_measurement\", \"_field\", \"_start\", \"_stop\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "displayName": "Lifetime production",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Energy_WH\")\n|> last()\n|> drop(columns: [\"_measurement\", \"_field\", \"_start\", \"_stop\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "Off"
+                },
+                "2": {
+                  "text": "Night mode"
+                },
+                "3": {
+                  "text": "Waking up"
+                },
+                "4": {
+                  "text": "On"
+                },
+                "5": {
+                  "text": "Throttled"
+                },
+                "6": {
+                  "text": "Shutting down"
+                },
+                "7": {
+                  "text": "Fault!"
+                },
+                "8": {
+                  "text": "Stand-by (maintenance)"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "super-light-blue",
+                "value": 1
+              },
+              {
+                "color": "super-light-blue",
+                "value": 2
+              },
+              {
+                "color": "super-light-blue",
+                "value": 3
+              },
+              {
+                "color": "dark-green",
+                "value": 4
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 5
+              },
+              {
+                "color": "super-light-blue",
+                "value": 6
+              },
+              {
+                "color": "dark-red",
+                "value": 7
+              },
+              {
+                "color": "dark-orange",
+                "value": 8
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 22,
+        "x": 0,
+        "y": 6
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -1m)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_Status\")\n|> last()\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "10s",
+      "title": "Status",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 55
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 75
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 22,
+        "y": 6
+      },
+      "hideTimeOverride": true,
+      "id": 24,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -1m)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_Temp\")\n|> last()\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "10s",
+      "title": "Temperature",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_Energy_WH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Production"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": true,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "9.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1003",
+          "alias": "Production",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Energy_WH\")\n|> aggregateWindow(every: 24h, fn: spread, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Daily production",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1045",
+          "format": "watt",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1046",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_Power max"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Max"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_Power min"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Min"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_Power median"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Power"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_Power"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Power"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "9.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1448",
+          "alias": "Max",
+          "color": "#96D98D",
+          "linewidth": 1
+        },
+        {
+          "$$hashKey": "object:1487",
+          "alias": "Min",
+          "color": "#96D98D",
+          "linewidth": 1
+        },
+        {
+          "$$hashKey": "object:1492",
+          "alias": "Power",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Power\")\n|> drop(columns: [\"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Power",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1173",
+          "format": "watt",
+          "logBase": 1,
+          "max": "3500",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1174",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "uid": "${DS_SUN_AND MOON}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "degree"
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 25,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "9.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:3393",
+          "alias": "Sun altitude",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SUN_AND MOON}"
+          },
+          "refId": "A",
+          "target": "sun_altitude"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Sun Altitude",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1173",
+          "format": "degree",
+          "logBase": 1,
+          "max": "90",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1174",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P8626EAEDCA520CB7"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 21,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P8626EAEDCA520CB7"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Details",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "Off"
+                },
+                "2": {
+                  "text": "Night mode"
+                },
+                "3": {
+                  "text": "Waking up"
+                },
+                "4": {
+                  "text": "On"
+                },
+                "5": {
+                  "text": "Throttled"
+                },
+                "6": {
+                  "text": "Shutting down"
+                },
+                "7": {
+                  "text": "Fault!"
+                },
+                "8": {
+                  "text": "Stand-by (maintenance)"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 8,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "super-light-blue",
+                "value": 1
+              },
+              {
+                "color": "super-light-blue",
+                "value": 2
+              },
+              {
+                "color": "super-light-blue",
+                "value": 3
+              },
+              {
+                "color": "dark-green",
+                "value": 4
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 5
+              },
+              {
+                "color": "super-light-blue",
+                "value": 6
+              },
+              {
+                "color": "dark-red",
+                "value": 7
+              },
+              {
+                "color": "dark-orange",
+                "value": 8
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
+      "id": 16,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\n|> range(start: -24h)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_Status\")\n|> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "24h",
+      "title": "Status",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "volt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_VoltageAB max"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase1 max"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_VoltageAB median"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_VoltageAB min"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase1 min"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_AC_VoltageAB"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageBC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase2"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageBC max"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase2 max"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageBC min"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase2 min"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageBC median"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase2"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageCA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase3"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageCA median"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase3"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageCA max"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase3 max"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "I_AC_VoltageCA min"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase3 min"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 36
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "9.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:304",
+          "alias": "Phase1 max",
+          "color": "#FFB357"
+        },
+        {
+          "$$hashKey": "object:312",
+          "alias": "Phase1 min",
+          "color": "#FFCB7D"
+        },
+        {
+          "$$hashKey": "object:320",
+          "alias": "Phase1",
+          "color": "#FA6400"
+        },
+        {
+          "$$hashKey": "object:365",
+          "alias": "Phase2 max",
+          "color": "#DEB6F2"
+        },
+        {
+          "$$hashKey": "object:373",
+          "alias": "Phase2  min",
+          "color": "#DEB6F2"
+        },
+        {
+          "$$hashKey": "object:381",
+          "alias": "Phase2",
+          "color": "#8F3BB8"
+        },
+        {
+          "$$hashKey": "object:389",
+          "alias": "Phase3 max",
+          "color": "#C8F2C2"
+        },
+        {
+          "$$hashKey": "object:397",
+          "alias": "Phase3 min",
+          "color": "#C8F2C2"
+        },
+        {
+          "$$hashKey": "object:405",
+          "alias": "Phase3",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and (r[\"_field\"] == \"I_AC_VoltageAB\" or r[\"_field\"] == \"I_AC_VoltageBC\" or r[\"_field\"] == \"I_AC_VoltageCA\"))\n|> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "AC Voltage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:184",
+          "format": "volt",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:185",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "uid": "${DS_SOLAREDGE_MODBUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_Temp"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I_Temp median"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temp"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 36
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "9.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1806",
+          "alias": "Temp",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_SOLAREDGE_MODBUS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_Temp\")\n|> filter(fn: (r) => r[\"aggType\"] != \"max\" and r[\"aggType\"] != \"min\")\n|> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\"])",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [
+        {
+          "$$hashKey": "object:447",
+          "colorMode": "warning",
+          "fill": false,
+          "line": true,
+          "op": "gt",
+          "value": 65,
+          "yaxis": "left"
+        },
+        {
+          "$$hashKey": "object:562",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 75,
+          "yaxis": "left"
+        }
+      ],
+      "timeRegions": [],
+      "title": "Temperature",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:728",
+          "format": "celsius",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:729",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "influxdb",
+    "solaredge"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "solaredge",
+          "value": "solaredge"
+        },
+        "datasource": {
+          "uid": "${DS_SOLAREDGE_MODBUS}"
+        },
+        "definition": "includebuckets = /solaredge.*/\nexcludebuckets = /solaredge_cloud.*/\n\n// Assumption: all buckets contain the whole time range, just with a different aggregation interval (and retention policy)\nbuckets()\n    |> filter(fn: (r) => r.name =~ includebuckets and r.name !~ excludebuckets)\n    |> map(\n        fn: (r) => ({r with\n            //replace retentionpolicy infinity with a high number in NS\n            retentionPeriod: if r.retentionPeriod == 0 then\n                999999999999999999\nelse\n                r.retentionPeriod,\n            //calculate the duration from \"to\" and \"from\" dashboard timespan and convert it to nanosecond\n            DashboardDurationInNS: (${__to} - ${__from}) * 1000000,\n        }),\n    )\n    |> filter(fn: (r) => r.DashboardDurationInNS <= r.retentionPeriod)\n    |> sort(columns: [\"retentionPeriod\"], desc: false)\n    |> limit(n: 1)\n    |> keep(columns: [\"name\"])",
+        "description": "Dynamically select the bucket based on the time interval",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "dynamicbucket",
+        "options": [],
+        "query": "includebuckets = /solaredge.*/\nexcludebuckets = /solaredge_cloud.*/\n\n// Assumption: all buckets contain the whole time range, just with a different aggregation interval (and retention policy)\nbuckets()\n    |> filter(fn: (r) => r.name =~ includebuckets and r.name !~ excludebuckets)\n    |> map(\n        fn: (r) => ({r with\n            //replace retentionpolicy infinity with a high number in NS\n            retentionPeriod: if r.retentionPeriod == 0 then\n                999999999999999999\nelse\n                r.retentionPeriod,\n            //calculate the duration from \"to\" and \"from\" dashboard timespan and convert it to nanosecond\n            DashboardDurationInNS: (${__to} - ${__from}) * 1000000,\n        }),\n    )\n    |> filter(fn: (r) => r.DashboardDurationInNS <= r.retentionPeriod)\n    |> sort(columns: [\"retentionPeriod\"], desc: false)\n    |> limit(n: 1)\n    |> keep(columns: [\"name\"])",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P8626EAEDCA520CB7"
+        },
+        "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)",
+        "description": "See SolarEdge's website",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "site",
+        "options": [],
+        "query": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "solaredge",
+          "value": "solaredge"
+        },
+        "hide": 2,
+        "name": "bucket",
+        "options": [
+          {
+            "selected": true,
+            "text": "solaredge",
+            "value": "solaredge"
+          }
+        ],
+        "query": "solaredge",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)",
+        "description": "Inverter serial number",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "sn",
+        "options": [],
+        "query": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "solaredge",
+          "value": "solaredge"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_SOLAREDGE_MODBUS",
+        "options": [],
+        "query": "influxdb",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "solaredge",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "SolarEdge Modbus",
+  "uid": "KOkFUpQMz",
+  "version": 5,
+  "weekStart": ""
+}
