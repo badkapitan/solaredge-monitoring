@@ -14,6 +14,12 @@ services:
       - "3443:443"
     depends_on:
       - grafana
+    environment:
+      - DOMAIN=localhost
+      - ALT_NAMES=localhost
+      - TARGET_PORT=3000
+      - TARGET_HOST=grafana
+      - SSL_PORT=443
 
   influxdb:
     image: influxdb:2.6-alpine
@@ -27,6 +33,13 @@ services:
       - common_network
     ports:
       - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
 
   telegraf:
     image: telegraf:latest
@@ -44,6 +57,20 @@ services:
       - common_network
     depends_on:
       - influxdb
+    environment:
+      - SOLAREDGE_SITE_ID=${SOLAREDGE_SITE_ID}
+      - SOLAREDGE_INVERTER_SN=${SOLAREDGE_INVERTER_SN}
+      - SOLAREDGE_API_KEY=${SOLAREDGE_API_KEY}
+      - SOLAREDGE_SITE_USERNAME=${SOLAREDGE_SITE_USERNAME}
+      - SOLAREDGE_SITE_PW=${SOLAREDGE_SITE_PW}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+      - UPDATE_WINDOW_START=05:00:00
+      - UPDATE_WINDOW_END=19:00:00
+      - UPDATE_INTERVAL=60
+      - INFLUXDB_MODBUS_BUCKET=${INFLUXDB_MODBUS_BUCKET}
+      - INVERTER_MODBUS_ADDRESS=${INVERTER_MODBUS_ADDRESS}
 
   grafana:
     image: grafana/grafana-enterprise
@@ -57,6 +84,21 @@ services:
       - common_network
     depends_on:
       - influxdb
+    environment:
+      - GF_PATHS_LOGS=/var/log/grafana/
+      - GF_LOG_MODE=console file
+      - GF_LOG_LEVEL=info
+      # To get admin/editor access toggle comment on following 3 lines (GF_SECURITY_ADMIN_USER, GF_SECURITY_ADMIN_PASSWORD, GF_AUTH_DISABLE_LOGIN_FORM)
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      # - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/solaredge-cloud_rev1.json
+      - GF_INSTALL_PLUGINS=fetzerch-sunandmoon-datasource
+      - TZ=Europe/Warsaw
+    ports:
+      - 3000:3000
 
 volumes:
   grafana_data:
