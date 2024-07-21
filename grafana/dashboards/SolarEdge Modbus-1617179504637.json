@@ -1,4 +1,61 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_SOLAREDGE",
+      "label": "solaredge",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    },
+    {
+      "name": "DS_SUN_AND_MOON",
+      "label": "Sun_and_Moon",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "fetzerch-sunandmoon-datasource",
+      "pluginName": "Sun and Moon"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "datasource",
+      "id": "fetzerch-sunandmoon-datasource",
+      "name": "Sun and Moon",
+      "version": "0.3.3"
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.5.3"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph (old)",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -18,13 +75,14 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 2,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -84,7 +142,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -129,7 +188,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -180,7 +240,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -225,7 +286,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -273,7 +335,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -318,7 +381,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -366,7 +430,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -411,7 +476,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -458,7 +524,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -502,7 +569,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -549,7 +617,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -593,7 +662,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -701,7 +771,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -747,7 +818,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -803,7 +875,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -852,7 +925,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -917,7 +991,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -994,7 +1069,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1106,7 +1182,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -1185,7 +1262,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "uid": "${DS_SUN_AND MOON}"
+        "type": "fetzerch-sunandmoon-datasource",
+        "uid": "${DS_SUN_AND_MOON}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1236,10 +1314,13 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SUN_AND MOON}"
+            "type": "fetzerch-sunandmoon-datasource",
+            "uid": "${DS_SUN_AND_MOON}"
           },
           "refId": "A",
-          "target": "sun_altitude"
+          "target": [
+            "sun_altitude"
+          ]
         }
       ],
       "thresholds": [],
@@ -1304,7 +1385,8 @@
     },
     {
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1414,7 +1496,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -1464,7 +1547,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1700,7 +1784,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -1777,7 +1862,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "uid": "${DS_SOLAREDGE_MODBUS}"
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1853,7 +1939,8 @@
       "targets": [
         {
           "datasource": {
-            "uid": "${DS_SOLAREDGE_MODBUS}"
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
           },
           "groupBy": [
             {
@@ -1954,13 +2041,10 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "solaredge",
-          "value": "solaredge"
-        },
+        "current": {},
         "datasource": {
-          "uid": "${DS_SOLAREDGE_MODBUS}"
+          "type": "influxdb",
+          "uid": "${DS_SOLAREDGE}"
         },
         "definition": "includebuckets = /solaredge.*/\nexcludebuckets = /solaredge_cloud.*/\n\n// Assumption: all buckets contain the whole time range, just with a different aggregation interval (and retention policy)\nbuckets()\n    |> filter(fn: (r) => r.name =~ includebuckets and r.name !~ excludebuckets)\n    |> map(\n        fn: (r) => ({r with\n            //replace retentionpolicy infinity with a high number in NS\n            retentionPeriod: if r.retentionPeriod == 0 then\n                999999999999999999\nelse\n                r.retentionPeriod,\n            //calculate the duration from \"to\" and \"from\" dashboard timespan and convert it to nanosecond\n            DashboardDurationInNS: (${__to} - ${__from}) * 1000000,\n        }),\n    )\n    |> filter(fn: (r) => r.DashboardDurationInNS <= r.retentionPeriod)\n    |> sort(columns: [\"retentionPeriod\"], desc: false)\n    |> limit(n: 1)\n    |> keep(columns: [\"name\"])",
         "description": "Dynamically select the bucket based on the time interval",
@@ -1983,7 +2067,7 @@
         "current": {},
         "datasource": {
           "type": "influxdb",
-          "uid": "P8626EAEDCA520CB7"
+          "uid": "${DS_SOLAREDGE}"
         },
         "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)",
         "description": "See SolarEdge's website",
@@ -2020,6 +2104,10 @@
       },
       {
         "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_SOLAREDGE}"
+        },
         "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: v.bucket,\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)",
         "description": "Inverter serial number",
         "hide": 0,
@@ -2062,6 +2150,6 @@
   "timezone": "",
   "title": "SolarEdge Modbus",
   "uid": "KOkFUpQMz",
-  "version": 5,
+  "version": 9,
   "weekStart": ""
 }
