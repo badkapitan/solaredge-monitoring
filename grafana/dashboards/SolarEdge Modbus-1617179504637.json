@@ -20,6 +20,12 @@
   "__elements": {},
   "__requires": [
     {
+      "type": "panel",
+      "id": "barchart",
+      "name": "Bar chart",
+      "version": ""
+    },
+    {
       "type": "datasource",
       "id": "fetzerch-sunandmoon-datasource",
       "name": "Sun and Moon",
@@ -38,12 +44,6 @@
       "version": "9.5.3"
     },
     {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
-    },
-    {
       "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
@@ -53,6 +53,12 @@
       "type": "panel",
       "id": "stat",
       "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
       "version": ""
     }
   ],
@@ -93,6 +99,8 @@
           "decimals": 2,
           "displayName": "Frequency",
           "mappings": [],
+          "max": 50.1,
+          "min": 49.9,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -114,7 +122,7 @@
               }
             ]
           },
-          "unit": "hertz"
+          "unit": "rothz"
         },
         "overrides": []
       },
@@ -508,6 +516,9 @@
       },
       "id": 17,
       "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -516,9 +527,7 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "textMode": "auto"
       },
       "pluginVersion": "9.5.3",
       "targets": [
@@ -565,7 +574,7 @@
         }
       ],
       "transparent": true,
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -601,6 +610,9 @@
       },
       "id": 11,
       "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -609,9 +621,7 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "textMode": "auto"
       },
       "pluginVersion": "9.5.3",
       "targets": [
@@ -658,7 +668,7 @@
         }
       ],
       "transparent": true,
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -920,16 +930,49 @@
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
         "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "watt"
         },
         "overrides": [
@@ -947,47 +990,36 @@
           }
         ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 24,
         "x": 0,
         "y": 9
       },
-      "hiddenSeries": false,
       "hideTimeOverride": true,
       "id": 19,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": false
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
-      "percentage": false,
       "pluginVersion": "9.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:1003",
-          "alias": "Production",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "datasource": {
@@ -1031,154 +1063,114 @@
           "tags": []
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Daily production",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1045",
-          "format": "watt",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1046",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "barchart"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_SOLAREDGE}"
+        "type": "datasource",
+        "uid": "-- Mixed --"
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "watt"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "I_AC_Power max"
+              "options": "Sun altitude"
             },
             "properties": [
               {
-                "id": "displayName",
-                "value": "Max"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_Power min"
-            },
-            "properties": [
+                "id": "custom.fillOpacity",
+                "value": 9
+              },
               {
-                "id": "displayName",
-                "value": "Min"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_Power median"
-            },
-            "properties": [
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ccccdc",
+                  "mode": "fixed"
+                }
+              },
               {
-                "id": "displayName",
-                "value": "Power"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_Power"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Power"
+                "id": "custom.lineWidth",
+                "value": 0
               }
             ]
           }
         ]
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
         "y": 16
       },
-      "hiddenSeries": false,
       "id": 4,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": false
-      },
-      "percentage": false,
-      "pluginVersion": "9.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:1448",
-          "alias": "Max",
-          "color": "#96D98D",
-          "linewidth": 1
+        "legend": {
+          "calcs": [
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        {
-          "$$hashKey": "object:1487",
-          "alias": "Min",
-          "color": "#96D98D",
-          "linewidth": 1
-        },
-        {
-          "$$hashKey": "object:1492",
-          "alias": "Power",
-          "color": "#37872D"
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -1220,142 +1212,315 @@
             ]
           ],
           "tags": []
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Power",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1173",
-          "format": "watt",
-          "logBase": 1,
-          "max": "3500",
-          "min": "0",
-          "show": true
         },
         {
-          "$$hashKey": "object:1174",
-          "format": "short",
-          "logBase": 1,
-          "show": true
+          "datasource": {
+            "type": "fetzerch-sunandmoon-datasource",
+            "uid": "${DS_SUN_AND_MOON}"
+          },
+          "hide": false,
+          "refId": "B",
+          "target": [
+            "sun_altitude"
+          ]
         }
       ],
-      "yaxis": {
-        "align": false
-      }
+      "title": "Power",
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "type": "fetzerch-sunandmoon-datasource",
-        "uid": "${DS_SUN_AND_MOON}"
+        "type": "datasource",
+        "uid": "-- Mixed --"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "degree"
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 9
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ccccdc",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              }
+            ]
+          }
+        ]
       },
-      "fill": 5,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
         "y": 24
       },
-      "hiddenSeries": false,
       "id": 25,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": false
-      },
-      "percentage": false,
-      "pluginVersion": "9.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:3393",
-          "alias": "Sun altitude",
-          "color": "#37872D"
+        "legend": {
+          "calcs": [
+            "max",
+            "min"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "9.5.3",
       "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_PF\")\n|> drop(columns: [\"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
         {
           "datasource": {
             "type": "fetzerch-sunandmoon-datasource",
             "uid": "${DS_SUN_AND_MOON}"
           },
-          "refId": "A",
+          "hide": false,
+          "refId": "B",
           "target": [
             "sun_altitude"
           ]
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Sun Altitude",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
+      "title": "Cos Phi (Power factor)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_SOLAREDGE}"
       },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1173",
-          "format": "degree",
-          "logBase": 1,
-          "max": "90",
-          "min": "0",
-          "show": true
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "volt"
         },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "mean",
+            "max",
+            "range"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
         {
-          "$$hashKey": "object:1174",
-          "format": "short",
-          "logBase": 1,
-          "show": true
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and (r[\"_field\"] == \"I_AC_VoltageAB\" or r[\"_field\"] == \"I_AC_VoltageBC\" or r[\"_field\"] == \"I_AC_VoltageCA\"))\n|> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\"])",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
-      "yaxis": {
-        "align": false
-      }
+      "title": "AC Voltage",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -1367,7 +1532,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 40
       },
       "id": 21,
       "panels": [],
@@ -1474,7 +1639,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 41
       },
       "id": 16,
       "options": {
@@ -1542,331 +1707,63 @@
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
         "uid": "${DS_SOLAREDGE}"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "volt"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_VoltageAB max"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase1 max"
-              }
-            ]
+          "color": {
+            "mode": "palette-classic"
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_VoltageAB median"
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
             },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase1"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_VoltageAB min"
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
             },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase1 min"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "I_AC_VoltageAB"
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
             },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase1"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageBC"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase2"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageBC max"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase2 max"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageBC min"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase2 min"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageBC median"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase2"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageCA"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase3"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageCA median"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase3"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageCA max"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase3 max"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "I_AC_VoltageCA min"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Phase3 min"
-              }
-            ]
-          }
-        ]
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 36
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:304",
-          "alias": "Phase1 max",
-          "color": "#FFB357"
-        },
-        {
-          "$$hashKey": "object:312",
-          "alias": "Phase1 min",
-          "color": "#FFCB7D"
-        },
-        {
-          "$$hashKey": "object:320",
-          "alias": "Phase1",
-          "color": "#FA6400"
-        },
-        {
-          "$$hashKey": "object:365",
-          "alias": "Phase2 max",
-          "color": "#DEB6F2"
-        },
-        {
-          "$$hashKey": "object:373",
-          "alias": "Phase2  min",
-          "color": "#DEB6F2"
-        },
-        {
-          "$$hashKey": "object:381",
-          "alias": "Phase2",
-          "color": "#8F3BB8"
-        },
-        {
-          "$$hashKey": "object:389",
-          "alias": "Phase3 max",
-          "color": "#C8F2C2"
-        },
-        {
-          "$$hashKey": "object:397",
-          "alias": "Phase3 min",
-          "color": "#C8F2C2"
-        },
-        {
-          "$$hashKey": "object:405",
-          "alias": "Phase3",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_SOLAREDGE}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
+            "thresholdsStyle": {
+              "mode": "line+area"
             }
-          ],
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and (r[\"_field\"] == \"I_AC_VoltageAB\" or r[\"_field\"] == \"I_AC_VoltageBC\" or r[\"_field\"] == \"I_AC_VoltageCA\"))\n|> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"site\", \"sn\"])",
-          "queryType": "randomWalk",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
+                "color": "transparent",
+                "value": null
               },
               {
-                "params": [],
-                "type": "mean"
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 75
               }
             ]
-          ],
-          "tags": []
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "AC Voltage",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:184",
-          "format": "volt",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:185",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_SOLAREDGE}"
-      },
-      "fieldConfig": {
-        "defaults": {
+          },
           "unit": "celsius"
         },
         "overrides": [
@@ -1893,49 +1790,44 @@
                 "value": "Temp"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Temp"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#37872D",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 36
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 44
       },
-      "hiddenSeries": false,
       "id": 6,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.5.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:1806",
-          "alias": "Temp",
-          "color": "#37872D"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "9.5.3",
       "targets": [
         {
           "datasource": {
@@ -1979,56 +1871,8 @@
           "tags": []
         }
       ],
-      "thresholds": [
-        {
-          "$$hashKey": "object:447",
-          "colorMode": "warning",
-          "fill": false,
-          "line": true,
-          "op": "gt",
-          "value": 65,
-          "yaxis": "left"
-        },
-        {
-          "$$hashKey": "object:562",
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 75,
-          "yaxis": "left"
-        }
-      ],
-      "timeRegions": [],
       "title": "Temperature",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:728",
-          "format": "celsius",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:729",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     }
   ],
   "refresh": "1m",
@@ -2131,7 +1975,7 @@
         "hide": 0,
         "includeAll": false,
         "multi": false,
-        "name": "DS_SOLAREDGE_MODBUS",
+        "name": "DS_SOLAREDGE",
         "options": [],
         "query": "influxdb",
         "queryValue": "",
@@ -2139,17 +1983,34 @@
         "regex": "solaredge",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Sun_and_Moon",
+          "value": "Sun_and_Moon"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_SUN_AND_MOON",
+        "options": [],
+        "query": "fetzerch-sunandmoon-datasource",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
       }
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "SolarEdge Modbus",
   "uid": "KOkFUpQMz",
-  "version": 9,
+  "version": 17,
   "weekStart": ""
 }
