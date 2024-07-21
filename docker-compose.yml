@@ -15,8 +15,8 @@ services:
     depends_on:
       - grafana
     environment:
-      - DOMAIN=localhost
-      - ALT_NAMES=localhost
+      - DOMAIN=${PROXY_DOMAIN}
+      - ALT_NAMES=${PROXY_ALT_NAMES}
       - TARGET_PORT=3000
       - TARGET_HOST=grafana
       - SSL_PORT=443
@@ -67,7 +67,7 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
       - UPDATE_WINDOW_START=05:00:00
-      - UPDATE_WINDOW_END=19:00:00
+      - UPDATE_WINDOW_END=21:00:00
       - UPDATE_INTERVAL=60
       - INFLUXDB_MODBUS_BUCKET=${INFLUXDB_MODBUS_BUCKET}
       - INVERTER_MODBUS_ADDRESS=${INVERTER_MODBUS_ADDRESS}
@@ -99,6 +99,7 @@ services:
       - TZ=Europe/Warsaw
     ports:
       - 3000:3000
+    user: "472:100"
 
 volumes:
   grafana_data:
