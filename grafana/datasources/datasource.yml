@@ -16,9 +16,25 @@ datasources:
     access: proxy
     url: http://influxdb:8086
     basicAuth: true
-    isDefault: true
+    isDefault: false
     jsonData:
       defaultBucket: solaredge_cloud
+      httpMode: POST
+      organization: myorg
+      version: Flux
+    secureJsonData:
+      token: myadmintoken
+    editable: true
+  - orgId: 1
+    version: 2
+    name: solaredge
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    basicAuth: true
+    isDefault: true
+    jsonData:
+      defaultBucket: solaredge
       httpMode: POST
       organization: myorg
       version: Flux

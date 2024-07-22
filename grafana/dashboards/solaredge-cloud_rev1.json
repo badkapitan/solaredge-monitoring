@@ -29,7 +29,7 @@
       "type": "datasource",
       "id": "fetzerch-sunandmoon-datasource",
       "name": "Sun and Moon",
-      "version": "0.3.0"
+      "version": "0.3.3"
     },
     {
       "type": "panel",
@@ -614,7 +614,9 @@
       "id": 30,
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "max"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1323,7 +1325,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1368,7 +1371,9 @@
           "id": 21,
           "options": {
             "legend": {
-              "calcs": [],
+              "calcs": [
+                "max"
+              ],
               "displayMode": "list",
               "placement": "bottom",
               "showLegend": true
@@ -1482,7 +1487,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1660,7 +1666,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "orange",
@@ -1714,7 +1721,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "red",
@@ -1742,10 +1750,13 @@
           "id": 8,
           "options": {
             "legend": {
-              "calcs": [],
+              "calcs": [
+                "min",
+                "max"
+              ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": false
+              "showLegend": true
             },
             "tooltip": {
               "mode": "multi",
@@ -1858,7 +1869,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               },
@@ -1899,10 +1911,13 @@
           "id": 26,
           "options": {
             "legend": {
-              "calcs": [],
+              "calcs": [
+                "min",
+                "max"
+              ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": false
+              "showLegend": true
             },
             "tooltip": {
               "mode": "multi",
@@ -2015,7 +2030,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "dark-red",
@@ -2070,9 +2086,14 @@
           "id": 22,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom",
+              "calcs": [
+                "min",
+                "mean",
+                "max",
+                "range"
+              ],
+              "displayMode": "table",
+              "placement": "right",
               "showLegend": true
             },
             "tooltip": {
@@ -2102,6 +2123,139 @@
             }
           ],
           "title": "AC Voltage",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Mixed --"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "yellow",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "dashed"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "volt"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sun altitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineWidth",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "text",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "custom.thresholdsStyle",
+                    "value": {
+                      "mode": "off"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 84
+          },
+          "id": 31,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "${DS_SOLAREDGE_CLOUD}"
+              },
+              "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_DC_Voltage\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "fetzerch-sunandmoon-datasource",
+                "uid": "${DS_SUN_AND_MOON}"
+              },
+              "hide": false,
+              "refId": "B",
+              "target": [
+                "sun_altitude"
+              ]
+            }
+          ],
+          "title": "DC Voltage",
           "type": "timeseries"
         },
         {
@@ -2152,7 +2306,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "dark-red",
@@ -2202,12 +2357,16 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 84
+            "y": 92
           },
           "id": 25,
           "options": {
             "legend": {
-              "calcs": [],
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
               "displayMode": "list",
               "placement": "bottom",
               "showLegend": true
