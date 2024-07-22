@@ -1,4 +1,4 @@
-FROM fsouza/docker-ssl-proxy
+FROM fsouza/docker-ssl-proxy:latest
 
 USER root
 

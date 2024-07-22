@@ -3,7 +3,6 @@ version: '3.9'
 services:
 
   proxy:
-    image: proxy:latest
     container_name: solaredge-proxy
     build:
       context: .
@@ -22,7 +21,7 @@ services:
       - SSL_PORT=443
 
   influxdb:
-    image: influxdb:2.6-alpine
+    image: influxdb:2.7-alpine
     container_name: solaredge-influxdb
     restart: unless-stopped
     volumes:
@@ -73,7 +72,7 @@ services:
       - INVERTER_MODBUS_ADDRESS=${INVERTER_MODBUS_ADDRESS}
 
   grafana:
-    image: grafana/grafana-enterprise
+    image: grafana/grafana-enterprise:latest
     container_name: solaredge-grafana
     restart: unless-stopped
     volumes:
