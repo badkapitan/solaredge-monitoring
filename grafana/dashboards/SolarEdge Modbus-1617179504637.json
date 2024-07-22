@@ -305,6 +305,8 @@
           },
           "displayName": "DC Current",
           "mappings": [],
+          "max": 4.1,
+          "min": 0,
           "noValue": "DC Current",
           "thresholds": {
             "mode": "absolute",
@@ -400,6 +402,8 @@
           },
           "displayName": "Total AC Current",
           "mappings": [],
+          "max": 16,
+          "min": 0,
           "noValue": "Total AC Current",
           "thresholds": {
             "mode": "absolute",
@@ -2008,6 +2012,168 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 9
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ccccdc",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 30,
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "min"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_AC_Current\")\n|> drop(columns: [\"_measurement\", \"site\", \"sn\"])\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "fetzerch-sunandmoon-datasource",
+            "uid": "${DS_SUN_AND_MOON}"
+          },
+          "hide": false,
+          "refId": "B",
+          "target": [
+            "sun_altitude"
+          ]
+        }
+      ],
+      "title": "AC Current",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -2086,7 +2252,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 68
       },
       "id": 27,
       "options": {
@@ -2160,6 +2326,169 @@
         }
       ],
       "title": "DC Voltage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 9
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ccccdc",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 76
+      },
+      "id": 29,
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "min"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_SOLAREDGE}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"${dynamicbucket}\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"inverter\" and r[\"site\"] == \"${site}\" and r[\"sn\"] == \"${sn}\" and r[\"_field\"] == \"I_DC_Current\")\n|> drop(columns: [\"_measurement\", \"site\", \"sn\"])\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "fetzerch-sunandmoon-datasource",
+            "uid": "${DS_SUN_AND_MOON}"
+          },
+          "hide": false,
+          "refId": "B",
+          "target": [
+            "sun_altitude"
+          ]
+        }
+      ],
+      "title": "DC Current",
       "type": "timeseries"
     },
     {
@@ -2268,7 +2597,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 68
+        "y": 84
       },
       "id": 6,
       "options": {
@@ -2331,7 +2660,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "1m",
+  "refresh": "10s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [
@@ -2467,6 +2796,6 @@
   "timezone": "",
   "title": "SolarEdge Modbus",
   "uid": "KOkFUpQMz",
-  "version": 19,
+  "version": 1,
   "weekStart": ""
 }
