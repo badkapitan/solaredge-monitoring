@@ -21,7 +21,7 @@ services:
       - SSL_PORT=443
 
   influxdb:
-    image: influxdb:2.7-alpine
+    image: influxdb:2.7.10-alpine
     container_name: solaredge-influxdb
     restart: unless-stopped
     volumes:
