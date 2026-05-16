@@ -1,9 +1,16 @@
-FROM telegraf:1.32.1-alpine
+FROM telegraf:1.38.4-alpine
 
 USER root
 
 ENV TZ=Europe/Warsaw
 
-RUN apk add --no-cache python3 py3-requests py3-tz tzdata
+RUN apk add --no-cache bash python3 py3-uv
+
+COPY telegraf/pyproject.toml .
+
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+RUN uv venv && uv sync
 
 USER telegraf

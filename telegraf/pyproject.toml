@@ -1,0 +1,15 @@
+[project]
+name = "app"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "pymodbus",
+    "requests",
+    "tz",
+    "httpx",
+    "httpx[http2]",
+    "solaredge>1",
+]
+optional-dependencies = { dev = [
+    "pudb",
+]}

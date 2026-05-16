@@ -10,7 +10,10 @@ import ast
 import getpass
 # 3rd party dependencies:
 import requests
+import httpx
 import pytz
+from solaredge import MonitoringClient
+
 
 # Stand-alone daemon managed by Telegraf.
 # Up to date with: Monitoring server API version January 2019
@@ -50,7 +53,7 @@ SCRAPELOG_FILE = 'scrape.log'
 HISTORY_SCRAPER_MAX_API_CALLS = 100         # Limit is 300/day, take some margin
 HISTORY_SCRAPER_MAX_HISTORY_DAYS = 1*28     # Scraping full history uses 7-8 api calls per scrapped month
 UPDATE_WINDOW_START = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_START', '09:00:00'), '%H:%M:%S').time()
-UPDATE_WINDOW_END = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_END', '19:00:00'), '%H:%M:%S').time()
+UPDATE_WINDOW_END = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_END', '23:00:00'), '%H:%M:%S').time()
 UPDATE_INTERVAL = int(os.environ.get('UPDATE_INTERVAL', '120'))  # Daily data update interval in minutes
 
 # ------------------------------ Global variables ------------------------------
@@ -63,6 +66,7 @@ HAS_OPTIMIZERS = {}
 LAST_UPDATES = {}
 HOME_DIR = ''
 USED_API_CALLS = 0
+sapi = MonitoringClient(api_key=SETTING_API_KEY)
 
 # ------------------------------ Utils -----------------------------------------
 
@@ -74,6 +78,8 @@ def flush():
 
 
 def flush_and_exit(code: int):
+    if sapi:
+        sapi.close()
     flush()
     exit(code)
 
@@ -165,12 +171,20 @@ def parse_datetime_dict(astr, debug=False):
 
 
 def format_L_data(data, label: str):
-    try:
-        parsed_data = f",I_{label}_AC_Voltage={data['acVoltage']},I_{label}_AC_Current={data['acCurrent']},I_{label}_AC_PF={data['cosPhi']},I_{label}_AC_Freq={data['acFrequency']},I_{label}_AC_VAR={data['reactivePower']},I_{label}_AC_VA={data['apparentPower']},I_{label}_AC_Power={data['activePower']}"
-        return parsed_data
-    except KeyError as ke:
-        print_err(f"Exception during data parse: {ke}\nLabel: {label}\nRaw data: {data}")
-    return ""
+    fields = {
+        f"I_{label}_AC_Voltage": data.get("acVoltage"),
+        f"I_{label}_AC_Current": data.get("acCurrent"),
+        f"I_{label}_AC_PF": data.get("cosPhi"),
+        f"I_{label}_AC_Freq": data.get("acFrequency"),
+        f"I_{label}_AC_VAR": data.get("reactivePower"),
+        f"I_{label}_AC_VA": data.get("apparentPower"),
+        f"I_{label}_AC_Power": data.get("activePower"),
+    }
+
+    parsed_data = "," + ",".join(
+        f"{k}={v}" for k, v in fields.items() if v is not None
+    )
+    return parsed_data
 
 
 # --------------------------- Main() helpers -----------------------------------
@@ -189,7 +203,7 @@ def initialize_home_dir():
 
 # Should only be called once
 def initialize_installation_info():
-    global SITES, SERIALS, SITE_TIMEZONES, SITE_IDS, HAS_OPTIMIZERS, USED_API_CALLS
+    global SITES, SERIALS, SITE_TIMEZONES, SITE_IDS, HAS_OPTIMIZERS, USED_API_CALLS, sapi
 
     # Check if the info is already cached
     if os.path.exists(os.path.join(HOME_DIR, INSTALLATION_INFO_FILE)):
@@ -205,19 +219,19 @@ def initialize_installation_info():
 
     # Get sites
     USED_API_CALLS += 1
-    r = requests.get(f"{BASE_API_URL}/sites/list.json",
-                     {'api_key': SETTING_API_KEY},
-                     timeout=REQUEST_TIMEOUT)
-    if r.status_code != 200:
-        print_err(f"SolarEdge Cloud: Sites: HTTP {r.status_code} : {r.url}")
-        return False
+    sites = sapi.get_site_list()
 
     # Parse response
-    for site in r.json()['sites']['site']:
+    for site in sites['sites']['site']:
         site_id = str(site['id'])
         SITE_IDS.append(site_id)
         SITE_TIMEZONES[site_id] = site['location']['timeZone']
-        HAS_OPTIMIZERS[site_id] = site['type'].find("Optimizers") != -1
+        if site['type']:
+            HAS_OPTIMIZERS[site_id] = site['type'].find("Optimizers") != -1
+        else:
+            USED_API_CALLS += 1
+            site_details = sapi.get_site_details(site_id=site['id']),
+            HAS_OPTIMIZERS[site_id] = site_details[0]['details']['type'].find("Optimizers") != -1
     SITES = ','.join(SITE_IDS)
 
     # Get serials
@@ -301,6 +315,7 @@ def update_all_data(endTime: datetime.datetime):
     print_err(f'Updating optimizers data (used api calls: {USED_API_CALLS})')
     for site in SITE_IDS:
         if HAS_OPTIMIZERS[site]:
+            print_err(f"Site {site} has optimizers")
             nr_days = max((endTime - playbackTimeStamps[site]).days,
                           7)  # API only supports up to 1 week history
             days = [0]
@@ -308,6 +323,8 @@ def update_all_data(endTime: datetime.datetime):
                 days = list(range(-nr_days, 0, 1))
             if get_playback_data_site(days, site):
                 playbackTimeStamps[site] = endTime
+        else:
+            print_err(f"Site {site} doesn't have optimizers")
     print_err(f'Updating power data (used api calls: {USED_API_CALLS})')
     powerTimeStamps = LAST_UPDATES['power']
     for site in SITE_IDS:
@@ -398,38 +415,41 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
     for serial in SERIALS[site]:
         print_err(f"Processing data for serial: {serial}")
         USED_API_CALLS += 1
-        r = requests.get(f"{BASE_API_URL}/equipment/{site}/{serial}/data", {
-            'startTime': format_datetime_url(startTime),
-            'endTime': format_datetime_url(endTime),
-            'api_key': SETTING_API_KEY
-        },
-            timeout=REQUEST_TIMEOUT)
-        if r.status_code != 200:
-            print_err(f"SolarEdge Cloud: Data: HTTP {r.status_code} : {r.url}")
-            # Note: might cause double data if the first call does not fail (prevous sites wil be remeasured next call)
-            return False
+        with httpx.Client(http2=True, timeout=REQUEST_TIMEOUT) as client:
+            r = client.get(
+                f"{BASE_API_URL}/equipment/{site}/{serial}/data",
+                params={
+                    "startTime": format_datetime_url(startTime),
+                    "endTime": format_datetime_url(endTime),
+                    "api_key": SETTING_API_KEY,
+                },
+            )
+            if r.status_code != 200:
+                print_err(f"SolarEdge Cloud: Data: HTTP {r.status_code} : {r.url}")
+                # Note: might cause double data if the first call does not fail (prevous sites wil be remeasured next call)
+                return False
 
-        # Parse request
-        # log_err("DATA RESPONSE:")
-        # log_err(str(r.json()))
-        for value in r.json()['data']['telemetries']:
-            date = value['date']
-            # Note: not all data is logged; see Json/API for all available options
-            conditionalData = ''
-            dcVoltage = value['dcVoltage']
-            if dcVoltage is not None:
-                conditionalData += f",I_DC_Voltage={dcVoltage}"
-            if 'L1Data' in value:
-                conditionalData += format_L_data(value['L1Data'], 'L1')
-            if 'L2Data' in value:
-                conditionalData += format_L_data(value['L2Data'], 'L2')
-            if 'L3Data' in value:
-                conditionalData += format_L_data(value['L3Data'], 'L3')
-            if 'groundFaultResistance' in value:
-                conditionalData += f',I_groundFaultResistance={value["groundFaultResistance"]}'
-            print(
-                f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]},I_operationMode={value["operationMode"]}{conditionalData} {to_unix_timestamp(date)}',
-                flush=False)
+            # Parse request
+            # log_err("DATA RESPONSE:")
+            # log_err(str(r.json()))
+            for value in r.json()['data']['telemetries']:
+                date = value['date']
+                # Note: not all data is logged; see Json/API for all available options
+                conditionalData = ''
+                dcVoltage = value['dcVoltage']
+                if dcVoltage is not None:
+                    conditionalData += f",I_DC_Voltage={dcVoltage}"
+                if 'L1Data' in value:
+                    conditionalData += format_L_data(value['L1Data'], 'L1')
+                if 'L2Data' in value:
+                    conditionalData += format_L_data(value['L2Data'], 'L2')
+                if 'L3Data' in value:
+                    conditionalData += format_L_data(value['L3Data'], 'L3')
+                if 'groundFaultResistance' in value:
+                    conditionalData += f',I_groundFaultResistance={value["groundFaultResistance"]}'
+                print(
+                    f'data,site={site},sn={serial} I_Temp={value["temperature"]},I_AC_Energy_WH={value["totalEnergy"]},I_AC_Power={value["totalActivePower"]},I_operationMode={value["operationMode"]}{conditionalData} {to_unix_timestamp(date)}',
+                    flush=False)
     return True
 
 
