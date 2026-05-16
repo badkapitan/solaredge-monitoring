@@ -53,7 +53,7 @@ SCRAPELOG_FILE = 'scrape.log'
 HISTORY_SCRAPER_MAX_API_CALLS = 100         # Limit is 300/day, take some margin
 HISTORY_SCRAPER_MAX_HISTORY_DAYS = 1*28     # Scraping full history uses 7-8 api calls per scrapped month
 UPDATE_WINDOW_START = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_START', '09:00:00'), '%H:%M:%S').time()
-UPDATE_WINDOW_END = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_END', '23:00:00'), '%H:%M:%S').time()
+UPDATE_WINDOW_END = datetime.datetime.strptime(os.environ.get('UPDATE_WINDOW_END', '19:00:00'), '%H:%M:%S').time()
 UPDATE_INTERVAL = int(os.environ.get('UPDATE_INTERVAL', '120'))  # Daily data update interval in minutes
 
 # ------------------------------ Global variables ------------------------------
