@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
 
   proxy:
@@ -73,7 +71,7 @@ services:
       - INVERTER_MODBUS_ADDRESS=${INVERTER_MODBUS_ADDRESS}
 
   grafana:
-    image: grafana/grafana-enterprise:latest
+    image: grafana/grafana-enterprise:13.0.1-security-01
     container_name: solaredge-grafana
     restart: unless-stopped
     volumes:
