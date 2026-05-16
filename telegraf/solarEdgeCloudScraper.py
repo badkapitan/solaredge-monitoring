@@ -165,7 +165,12 @@ def parse_datetime_dict(astr, debug=False):
 
 
 def format_L_data(data, label: str):
-    return f",I_{label}_AC_Voltage={data['acVoltage']},I_{label}_AC_Current={data['acCurrent']},I_{label}_AC_PF={data['cosPhi']},I_{label}_AC_Freq={data['acFrequency']},I_{label}_AC_VAR={data['reactivePower']},I_{label}_AC_VA={data['apparentPower']},I_{label}_AC_Power={data['activePower']}"
+    try:
+        parsed_data = f",I_{label}_AC_Voltage={data['acVoltage']},I_{label}_AC_Current={data['acCurrent']},I_{label}_AC_PF={data['cosPhi']},I_{label}_AC_Freq={data['acFrequency']},I_{label}_AC_VAR={data['reactivePower']},I_{label}_AC_VA={data['apparentPower']},I_{label}_AC_Power={data['activePower']}"
+        return parsed_data
+    except KeyError as ke:
+        print_err(f"Exception during data parse: {ke}\nLabel: {label}\nRaw data: {data}")
+    return ""
 
 
 # --------------------------- Main() helpers -----------------------------------
@@ -391,6 +396,7 @@ def get_energy_api(site: str, startTime: datetime, endTime: datetime):
 def get_data_api(site: str, startTime: datetime, endTime: datetime):
     global USED_API_CALLS
     for serial in SERIALS[site]:
+        print_err(f"Processing data for serial: {serial}")
         USED_API_CALLS += 1
         r = requests.get(f"{BASE_API_URL}/equipment/{site}/{serial}/data", {
             'startTime': format_datetime_url(startTime),
