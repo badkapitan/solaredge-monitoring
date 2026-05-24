@@ -41,6 +41,7 @@ services:
 
   influxdb-init:
     image: influxdb:2.7.10-alpine
+    container_name: solaredge-influxdb-init
     depends_on:
       - influxdb
     networks:
