@@ -167,3 +167,4 @@ influxdb/backup*
 
 .DS_Store
 proxy/cert/
+victron-loader/config/

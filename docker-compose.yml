@@ -115,9 +115,36 @@ services:
       - 3000:3000
     user: "472:100"
 
+  loader:
+    image: "victronenergy/venus-influx-loader:1.7"
+    container_name: victron-loader
+    command: [ "bin/venus-influx-loader", "--enable-discovery-api" ]
+    ports:
+      - "8088:8088"
+    volumes:
+      # - "config-storage:/config"
+      - ./victron-loader/config:/config
+    depends_on:
+      - influxdb
+    networks:
+      - common_network
+
+  browser:
+    image: "victronenergy/venus-influx-loader:1.7"
+    container_name: victron-browser
+    command: [ "bin/venus-upnp-browser", "--discovery-api", "http://localhost:8088/discovery-api/" ]
+    # `network_mode: host` is required for the `venus-upnp-browser` to access your host network
+    # and audo discover Venus devices.
+    # network_mode: host
+    depends_on:
+      - influxdb
+    networks:
+      - common_network
+
 volumes:
   grafana_data:
   influxdb:
+  config-storage:
 
 networks:
   common_network:
