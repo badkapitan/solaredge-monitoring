@@ -13,7 +13,7 @@ for device_id in [1, 126]:
     try:
         # Wysłanie requestu i odczyt rejestrów
         address = 40001
-        count = 10
+        count = 125
         result = client.read_holding_registers(address=address - 40001, count=count, device_id=device_id)
 
         # Wyświetlenie wyników
