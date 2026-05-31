@@ -11,6 +11,6 @@ COPY telegraf/pyproject.toml .
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
-RUN uv venv && uv sync
+RUN uv venv --clear && uv sync
 
 USER telegraf
