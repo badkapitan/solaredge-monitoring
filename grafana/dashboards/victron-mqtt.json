@@ -3,8 +3,8 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "adp8cb9",
-    "generation": 15,
-    "creationTimestamp": "2026-05-24T20:04:23Z",
+    "generation": 3,
+    "creationTimestamp": "2026-05-31T10:03:13Z",
     "labels": {},
     "annotations": {}
   },
@@ -17,10 +17,7 @@
             "kind": "DataQuery",
             "group": "grafana",
             "version": "v0",
-            "spec": {},
-            "labels": {
-              "grafana.app/export-label": "grafana-1"
-            }
+            "spec": {}
           },
           "enable": true,
           "hide": true,
@@ -53,9 +50,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"grid/Ac/L1/Voltage\" or r[\"_measurement\"] == \"grid/Ac/L2/Voltage\" or r[\"_measurement\"] == \"grid/Ac/L3/Voltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n  "
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -172,9 +166,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"pvinverter/Ac/Power\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -300,9 +291,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"pvinverter/Ac/L1/Power\" or r[\"_measurement\"] == \"pvinverter/Ac/L2/Power\" or r[\"_measurement\"] == \"pvinverter/Ac/L3/Power\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -420,9 +408,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"platform/Network/Wifi/SignalStrength\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -540,9 +525,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveAlarms\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveInformations\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveNotifications\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveWarnings\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -621,9 +603,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"pvinverter/Connected\" or \r\n    r[\"_measurement\"] == \"system/Ac/ActiveIn/GridParallel\" or \r\n    r[\"_measurement\"] == \"battery/Soh\" or \r\n    r[\"_measurement\"] == \"battery/Connected\"\r\n  )\r\n  |> drop(columns: [\"_field\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -717,9 +696,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"pvinverter/ProductName\" or r[\"_measurement\"] == \"battery/ProductName\")\r\n  |> drop(columns: [\"_field\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -815,9 +791,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"pvinverter/StatusCode\" or r[\"_measurement\"] == \"system/Ac/ActiveIn/GridParallel\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -909,9 +882,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "import \"strings\"\r\n\r\nfrom(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"system/Ac/ActiveIn/GridParallel\" or\r\n      r[\"_measurement\"] == \"settings/Settings/Services/Bluetooth\" or\r\n      r[\"_measurement\"] == \"settings/Settings/Services/AccessPoint\" or\r\n      r[\"_measurement\"] == \"settings/Settings/Services/EthernetLinkLocal\" or\r\n      r[\"_measurement\"] == \"settings/Settings/Services/Evcc\" or\r\n      r[\"_measurement\"] == \"settings/Settings/Services/Modbus\" or\r\n      r[\"_measurement\"] == \"settings/Settings/Services/MqttLocal\" or\r\n      r[\"_measurement\"] == \"settings/Settings/System/ActiveNetworkConnection\"\r\n  )\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _measurement: strings.trimPrefix(\r\n          v: r._measurement,\r\n          prefix: \"settings/Settings/\"\r\n      )\r\n  }))\r\n  |> drop(columns: [\"_field\", \"name\", \"portalId\"])\r\n  "
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1003,9 +973,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"grid/Ac/L1/Current\" or r[\"_measurement\"] == \"grid/Ac/L2/Current\" or r[\"_measurement\"] == \"grid/Ac/L3/Current\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n  "
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1122,9 +1089,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"grid/Ac/L1/Voltage\" or r[\"_measurement\"] == \"grid/Ac/L2/Voltage\" or r[\"_measurement\"] == \"grid/Ac/L3/Voltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: min, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "B",
@@ -1140,9 +1104,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system/Ac/ConsumptionOnInput/L1/Current\" or r[\"_measurement\"] == \"system/Ac/ConsumptionOnInput/L2/Current\" or r[\"_measurement\"] == \"system/Ac/ConsumptionOnInput/L3/Current\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n  "
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1270,9 +1231,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system/Ac/ActiveIn/GridParallel\")\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1348,9 +1306,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system/Ac/ConsumptionOnInput/L1/Power\" or r[\"_measurement\"] == \"system/Ac/ConsumptionOnInput/L2/Power\" or r[\"_measurement\"] == \"system/Ac/ConsumptionOnInput/L3/Power\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n  "
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1463,6 +1418,86 @@
           }
         }
       },
+      "panel-21": {
+        "kind": "Panel",
+        "spec": {
+          "id": 21,
+          "title": "Solar Flow",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "spec": {
+                        "query": "pv =\r\n  from(bucket: \"venus\")\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"pvinverter/Ac/Power\"\r\n    )\r\n    |> last()\r\n    |> group()\r\n    |> sum()\r\n    |> set(key: \"_measurement\", value: \"pv\")\r\n\r\ngrid =\r\n  from(bucket: \"venus\")\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"grid/Ac/Power\" or\r\n      r[\"_measurement\"] == \"battery/Dc/0/Power\" or\r\n      r[\"_measurement\"] == \"battery/Soc\"\r\n    )\r\n    |> last()\r\n    |> keep(columns: [\"_value\", \"_measurement\"])\r\n\r\nload =\r\n  from(bucket: \"venus\")\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"system/Ac/ConsumptionOnOutput/L3/Power\" or\r\n      r[\"_measurement\"] == \"system/Ac/ConsumptionOnOutput/L2/Power\" or\r\n      r[\"_measurement\"] == \"system/Ac/ConsumptionOnOutput/L1/Power\"\r\n    )\r\n    |> last()\r\n    |> group()\r\n    |> sum()\r\n    |> set(key: \"_measurement\", value: \"load\")\r\n\r\nunion(tables: [pv, grid, load])\r\n  |> pivot(\r\n      rowKey: [],\r\n      columnKey: [\"_measurement\"],\r\n      valueColumn: \"_value\"\r\n    )\r\n"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "timeFrom": "10s",
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "lehmannch-flow-panel",
+            "version": "2.0.3",
+            "spec": {
+              "options": {
+                "additionalSource2AlwaysShow": false,
+                "additionalSource2Color": "rgb(156, 39, 176)",
+                "additionalSource2Icon": "evPanel",
+                "additionalSource2Label": "Wallbox",
+                "additionalSource2LoadQuery": "",
+                "additionalSource2SOCQuery": "",
+                "additionalSource3AlwaysShow": false,
+                "additionalSource3Color": "rgb(255, 152, 0)",
+                "additionalSource3Icon": "evPanel",
+                "additionalSource3Label": "Wallbox 2",
+                "additionalSource3LoadQuery": "",
+                "additionalSource3SOCQuery": "",
+                "additionalSourceAlwaysShow": true,
+                "additionalSourceColor": "rgb(81, 187, 67)",
+                "additionalSourceCount": 1,
+                "additionalSourceIcon": "battery",
+                "additionalSourceLabel": "Battery",
+                "additionalSourceLoadQuery": "battery/Dc/0/Power",
+                "additionalSourceSOCQuery": "battery/Soc",
+                "animationSpeedReference": 400,
+                "gridColor": "rgb(232, 41, 26)",
+                "gridQuery": "grid/Ac/Power",
+                "linesColor": "rgb(104, 193, 255)",
+                "loadColor": "rgb(0, 141, 209)",
+                "loadQuery": "load",
+                "measurementUnit": "auto",
+                "padding": 20,
+                "showEnergyThreshold": 0,
+                "showLegend": true,
+                "solarColor": "rgb(244, 174, 1)",
+                "solarQuery": "pv"
+              },
+              "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
       "panel-3": {
         "kind": "Panel",
         "spec": {
@@ -1483,9 +1518,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/Soc\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1501,9 +1533,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/Dc/0/Temperature\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "B",
@@ -1631,9 +1660,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/System/MinCellTemperature\" or r[\"_measurement\"] == \"battery/System/MaxCellTemperature\" or r[\"_measurement\"] == \"battery/System/MaxCellVoltage\" or r[\"_measurement\"] == \"battery/System/MinCellVoltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1712,9 +1738,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/System/MaxCellVoltage\" or r[\"_measurement\"] == \"battery/System/MinCellVoltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1828,9 +1851,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r[\"_measurement\"] == \"pvinverter/Ac/L1/Power\" or \r\n    r[\"_measurement\"] == \"pvinverter/Ac/L2/Power\" or\r\n    r[\"_measurement\"] == \"pvinverter/Ac/L3/Power\" or\r\n    r[\"_measurement\"] == \"vebus/Ac/Out/L1/F\" or \r\n    r[\"_measurement\"] == \"vebus/Ac/Out/L2/F\" or \r\n    r[\"_measurement\"] == \"vebus/Ac/Out/L3/F\"\r\n  )\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -1958,9 +1978,6 @@
                       "version": "v0",
                       "spec": {
                         "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"grid/Ac/L1/Power\" or r[\"_measurement\"] == \"grid/Ac/L2/Power\" or r[\"_measurement\"] == \"grid/Ac/L3/Power\" or r[\"_measurement\"] == \"grid/Ac/Power\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])"
-                      },
-                      "labels": {
-                        "grafana.app/export-label": "influxdb-1"
                       }
                     },
                     "refId": "A",
@@ -2072,6 +2089,15 @@
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
+              }
+            }
+          },
+          {
+            "kind": "AutoGridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-21"
               }
             }
           },

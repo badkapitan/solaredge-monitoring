@@ -109,7 +109,7 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/solaredge-cloud.json
-      - GF_PLUGINS_PREINSTALL_SYNC=fetzerch-sunandmoon-datasource
+      - GF_PLUGINS_PREINSTALL_SYNC=fetzerch-sunandmoon-datasource,lehmannch-flow-panel
       - TZ=Europe/Warsaw
     ports:
       - 3000:3000
