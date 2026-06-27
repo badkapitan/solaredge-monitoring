@@ -118,6 +118,7 @@ services:
   loader:
     image: "victronenergy/venus-influx-loader:1.7"
     container_name: victron-loader
+    restart: unless-stopped
     command: [ "bin/venus-influx-loader", "--enable-discovery-api" ]
     ports:
       - "8088:8088"
@@ -133,6 +134,7 @@ services:
   browser:
     image: "victronenergy/venus-influx-loader:1.7"
     container_name: victron-browser
+    restart: unless-stopped
     command: [ "bin/venus-upnp-browser", "--discovery-api", "http://localhost:8088/discovery-api/" ]
     # `network_mode: host` is required for the `venus-upnp-browser` to access your host network
     # and audo discover Venus devices.
