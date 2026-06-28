@@ -56,7 +56,6 @@ services:
     command: -c "sleep 10 && sh /init.sh"
 
   telegraf:
-    image: telegraf:1.38.4-alpine
     container_name: solaredge-telegraf
     restart: unless-stopped
     volumes:
@@ -87,7 +86,7 @@ services:
       - INVERTER_MODBUS_ADDRESS=${INVERTER_MODBUS_ADDRESS}
 
   grafana:
-    image: grafana/grafana-enterprise:13.0.1-security-01
+    image: grafana/grafana-enterprise:13.0.3-slim
     container_name: grafana
     restart: unless-stopped
     volumes:
@@ -109,7 +108,7 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/solaredge-cloud.json
-      - GF_PLUGINS_PREINSTALL_SYNC=fetzerch-sunandmoon-datasource,lehmannch-flow-panel
+      - GF_PLUGINS_PREINSTALL_SYNC=fetzerch-sunandmoon-datasource,lehmannch-flow-panel,netsage-sankey-panel
       - TZ=Europe/Warsaw
     ports:
       - 3000:3000

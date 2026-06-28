@@ -1,10 +1,10 @@
-FROM telegraf:1.38.4-alpine
+FROM telegraf:1.39.0-alpine
 
 USER root
 
 ENV TZ=Europe/Warsaw
 
-RUN apk add --no-cache bash python3 py3-uv
+RUN apk add --no-cache bash python3 py3-uv curl
 
 COPY telegraf/pyproject.toml .
 
