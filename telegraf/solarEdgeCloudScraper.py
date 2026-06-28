@@ -196,9 +196,12 @@ def initialize_home_dir():
 
     # By default the env will be set to the session user (alarm's home) which the telegraf user
     # has no access too. Hence when writing files a full path must be used.
-    HOME_DIR = os.path.expanduser(
+    HOME_DIR = os.path.join(os.path.expanduser(
         '~' + getpass.getuser()
-    )  # get the home of the telegraf user (same as the location of the script)
+    ), '.solaredge')  # get the home of the telegraf user (same as the location of the script)
+
+    if not os.path.exists(HOME_DIR):
+        os.makedirs(HOME_DIR)
 
 
 # Should only be called once
@@ -290,19 +293,23 @@ def initialize_last_updated():
 def ensure_logged_in(session: requests.Session, function):
     if os.path.exists(os.path.join(HOME_DIR, SITE_COOKIE_FILE)):
         with open(os.path.join(HOME_DIR, SITE_COOKIE_FILE), 'r') as f:
-            session.cookies.update(
-                requests.utils.cookiejar_from_dict(json.load(f)))
-            response = function()
-            if response.status_code == 200:
-                return response
+            session.cookies.update(requests.utils.cookiejar_from_dict(json.load(f)))
+            if ("CSRF-TOKEN" in session.cookies.keys()):
+                response = function()
+                if response.status_code == 200:
+                    return response
 
     # Log in again
-    session.post(SITE_LOGIN_URL,
-                 headers={"Content-Type": "application/x-www-form-urlencoded"},
-                 data={
-                     "j_username": SETTING_SITE_USERNAME,
-                     "j_password": SETTING_SITE_PW
-                 })
+    loginResponse = session.post(
+        SITE_LOGIN_URL,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        data={"j_username": SETTING_SITE_USERNAME, "j_password": SETTING_SITE_PW}
+    )
+
+    if loginResponse.status_code != 200:
+        print_err(f"\nUNABLE TO LOGIN TO SOLAREDGE!\n\nLogin response status code: {loginResponse.status_code}. Login response content: {loginResponse.text}")
+        return loginResponse
+
     with open(os.path.join(HOME_DIR, SITE_COOKIE_FILE), 'w') as f:
         json.dump(requests.utils.dict_from_cookiejar(session.cookies), f)
 
@@ -466,6 +473,7 @@ def get_playback_data_site(days, site: str):
         days) > 1 or days[0] != 0 else PANELS_DAILY_DATA
 
     session = requests.session()
+
     USED_API_CALLS += 1
     panels = ensure_logged_in(
         session, lambda: session.post(
@@ -482,6 +490,12 @@ def get_playback_data_site(days, site: str):
     if panels.status_code != 200:
         print_err(
             f"SolarEdge Cloud: Playback: HTTP {panels.status_code} : {panels.url}"
+        )
+        return
+
+    if "reportersData" not in panels.text:
+        print_err(
+            f"SolarEdge Cloud: Playback did not return useful data: status code: {panels.status_code}. Content:\n{panels.text}"
         )
         return
 
