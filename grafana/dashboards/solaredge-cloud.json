@@ -3,8 +3,8 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "YG1drwMz",
-    "generation": 4,
-    "creationTimestamp": "2024-05-10T11:42:38Z",
+    "generation": 1,
+    "creationTimestamp": "2026-05-31T10:03:14Z",
     "labels": {},
     "annotations": {}
   },
@@ -17,10 +17,10 @@
             "kind": "DataQuery",
             "group": "datasource",
             "version": "v0",
-            "spec": {},
             "labels": {
               "grafana.app/export-label": "datasource-1"
-            }
+            },
+            "spec": {}
           },
           "enable": false,
           "hide": true,
@@ -55,9 +55,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -93,6 +90,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -166,9 +167,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -204,6 +202,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -277,9 +279,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -315,6 +314,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -328,13 +331,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -461,9 +465,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -499,6 +500,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -572,9 +577,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -610,6 +612,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -623,13 +629,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -758,11 +765,12 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "query": "from(bucket: \"solaredge_cloud\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_L1_AC_Voltage\" or r[\"_field\"] == \"I_L2_AC_Voltage\" or r[\"_field\"] == \"I_L3_AC_Voltage\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -776,13 +784,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -927,11 +936,12 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "query": "from(bucket: \"solaredge_cloud\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_L1_AC_Voltage\" or r[\"_field\"] == \"I_L2_AC_Voltage\" or r[\"_field\"] == \"I_L3_AC_Voltage\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1010,11 +1020,12 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "query": "from(bucket: \"solaredge_cloud\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_AC_Power\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1095,11 +1106,12 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "query": "from(bucket: \"solaredge_cloud\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_L1_AC_Freq\" or r[\"_field\"] == \"I_L2_AC_Freq\" or r[\"_field\"] == \"I_L3_AC_Freq\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1113,13 +1125,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -1263,9 +1276,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1300,6 +1310,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1313,13 +1327,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -1448,9 +1463,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1486,6 +1498,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1628,9 +1644,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1666,6 +1679,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1738,9 +1755,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1776,6 +1790,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1789,13 +1807,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -1948,9 +1967,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1986,6 +2002,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1999,13 +2019,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -2160,11 +2181,12 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "query": "from(bucket: \"solaredge_cloud\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"I_DC_Voltage\")\n  |> filter(fn: (r) => r[\"site\"] == \"${site}\")\n  |> filter(fn: (r) => r[\"sn\"] == \"${sn}\")\n  |> drop(columns: [\"site\", \"sn\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2178,13 +2200,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -2319,9 +2342,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2357,6 +2377,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2499,9 +2523,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2536,6 +2557,10 @@
                           ]
                         ],
                         "tags": []
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "influxdb-1",
+                        "grafana.app/export-datasource-name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2549,13 +2574,14 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
                         ]
+                      },
+                      "labels": {
+                        "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
+                        "grafana.app/export-datasource-name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -2998,11 +3024,12 @@
             "kind": "DataQuery",
             "group": "influxdb",
             "version": "v0",
-            "datasource": {
-              "name": "influxdb"
-            },
             "spec": {
               "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)"
+            },
+            "labels": {
+              "grafana.app/export-label": "influxdb-1",
+              "grafana.app/export-datasource-name": "influxdb"
             }
           },
           "regex": "",
@@ -3030,11 +3057,12 @@
             "kind": "DataQuery",
             "group": "influxdb",
             "version": "v0",
-            "datasource": {
-              "name": "influxdb"
-            },
             "spec": {
               "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)"
+            },
+            "labels": {
+              "grafana.app/export-label": "influxdb-1",
+              "grafana.app/export-datasource-name": "influxdb"
             }
           },
           "regex": "",

@@ -3,7 +3,7 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "adp8cb9",
-    "generation": 3,
+    "generation": 26,
     "creationTimestamp": "2026-05-31T10:03:13Z",
     "labels": {},
     "annotations": {}
@@ -34,7 +34,7 @@
         "kind": "Panel",
         "spec": {
           "id": 1,
-          "title": "Grid Voltage to Neutral",
+          "title": "Grid voltage to neutral",
           "description": "",
           "links": [],
           "data": {
@@ -64,7 +64,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -74,7 +74,9 @@
                 "legend": {
                   "calcs": [
                     "min",
-                    "max"
+                    "mean",
+                    "max",
+                    "range"
                   ],
                   "displayMode": "table",
                   "placement": "bottom",
@@ -150,7 +152,7 @@
         "kind": "Panel",
         "spec": {
           "id": 10,
-          "title": "PV Inverter Ac Power",
+          "title": "PV inverter AC power",
           "description": "",
           "links": [],
           "data": {
@@ -188,7 +190,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -265,7 +267,32 @@
                     }
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "__systemRef": "hideSeriesFrom",
+                    "matcher": {
+                      "id": "byNames",
+                      "options": {
+                        "mode": "exclude",
+                        "names": [
+                          "Total"
+                        ],
+                        "prefix": "All except:",
+                        "readOnly": true
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": false,
+                          "tooltip": true,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -275,7 +302,7 @@
         "kind": "Panel",
         "spec": {
           "id": 11,
-          "title": "PV Inverter Ac Power per Line",
+          "title": "PV inverter AC power per line",
           "description": "",
           "links": [],
           "data": {
@@ -305,7 +332,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -392,7 +419,7 @@
         "kind": "Panel",
         "spec": {
           "id": 12,
-          "title": "Wifi Signal Strength",
+          "title": "Wifi signal strength",
           "description": "",
           "links": [],
           "data": {
@@ -422,7 +449,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -433,7 +460,8 @@
                   "calcs": [
                     "min",
                     "mean",
-                    "max"
+                    "max",
+                    "range"
                   ],
                   "displayMode": "table",
                   "placement": "bottom",
@@ -509,7 +537,7 @@
         "kind": "Panel",
         "spec": {
           "id": 13,
-          "title": "Notifications - Active",
+          "title": "Active events",
           "description": "",
           "links": [],
           "data": {
@@ -524,7 +552,7 @@
                       "group": "influxdb",
                       "version": "v0",
                       "spec": {
-                        "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveAlarms\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveInformations\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveNotifications\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveWarnings\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
+                        "query": "import \"strings\"\r\n\r\nfrom(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveAlarms\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveInformations\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveNotifications\" or r[\"_measurement\"] == \"platform/Notifications/NumberOfActiveWarnings\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _measurement: strings.trimPrefix(\r\n          v: r._measurement,\r\n          prefix: \"platform/Notifications/NumberOfActive\"\r\n      )\r\n  }))"
                       }
                     },
                     "refId": "A",
@@ -539,7 +567,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "value",
@@ -587,7 +615,7 @@
         "kind": "Panel",
         "spec": {
           "id": 14,
-          "title": "Battery/Grid/PV State Timeline",
+          "title": "Battery/Grid/PV state timeline",
           "description": "",
           "links": [],
           "data": {
@@ -617,7 +645,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "alignValue": "center",
@@ -680,7 +708,7 @@
         "kind": "Panel",
         "spec": {
           "id": 15,
-          "title": "Info",
+          "title": "Product names",
           "description": "",
           "links": [],
           "data": {
@@ -712,7 +740,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "alignValue": "left",
@@ -807,7 +835,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "alignValue": "center",
@@ -866,7 +894,7 @@
         "kind": "Panel",
         "spec": {
           "id": 17,
-          "title": "Services and System Info",
+          "title": "Services and system info",
           "description": "",
           "links": [],
           "data": {
@@ -898,7 +926,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "alignValue": "center",
@@ -957,7 +985,7 @@
         "kind": "Panel",
         "spec": {
           "id": 18,
-          "title": "Grid Current",
+          "title": "Grid current",
           "description": "",
           "links": [],
           "data": {
@@ -987,7 +1015,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -997,6 +1025,7 @@
                 "legend": {
                   "calcs": [
                     "min",
+                    "mean",
                     "max"
                   ],
                   "displayMode": "table",
@@ -1073,7 +1102,7 @@
         "kind": "Panel",
         "spec": {
           "id": 19,
-          "title": "Grid Input Voltage vs Current",
+          "title": "Grid input voltage vs current",
           "description": "",
           "links": [],
           "data": {
@@ -1118,7 +1147,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -1215,7 +1244,7 @@
         "kind": "Panel",
         "spec": {
           "id": 2,
-          "title": "Grid connected",
+          "title": "Grid status",
           "description": "",
           "links": [],
           "data": {
@@ -1245,7 +1274,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "value",
@@ -1266,6 +1295,23 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "mappings": [
+                    {
+                      "type": "value",
+                      "options": {
+                        "0": {
+                          "text": "Offline!",
+                          "color": "dark-red",
+                          "index": 0
+                        },
+                        "1": {
+                          "text": "Connected",
+                          "color": "dark-green",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -1290,7 +1336,7 @@
         "kind": "Panel",
         "spec": {
           "id": 20,
-          "title": "Grid ConsumptionOnInput Power",
+          "title": "Grid consumption on input power",
           "description": "",
           "links": [],
           "data": {
@@ -1320,7 +1366,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -1422,7 +1468,7 @@
         "kind": "Panel",
         "spec": {
           "id": 21,
-          "title": "Solar Flow",
+          "title": "Solar flow",
           "description": "",
           "links": [],
           "data": {
@@ -1437,7 +1483,7 @@
                       "group": "influxdb",
                       "version": "v0",
                       "spec": {
-                        "query": "pv =\r\n  from(bucket: \"venus\")\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"pvinverter/Ac/Power\"\r\n    )\r\n    |> last()\r\n    |> group()\r\n    |> sum()\r\n    |> set(key: \"_measurement\", value: \"pv\")\r\n\r\ngrid =\r\n  from(bucket: \"venus\")\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"grid/Ac/Power\" or\r\n      r[\"_measurement\"] == \"battery/Dc/0/Power\" or\r\n      r[\"_measurement\"] == \"battery/Soc\"\r\n    )\r\n    |> last()\r\n    |> keep(columns: [\"_value\", \"_measurement\"])\r\n\r\nload =\r\n  from(bucket: \"venus\")\r\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n    |> filter(fn: (r) =>\r\n      r[\"_measurement\"] == \"system/Ac/ConsumptionOnOutput/L3/Power\" or\r\n      r[\"_measurement\"] == \"system/Ac/ConsumptionOnOutput/L2/Power\" or\r\n      r[\"_measurement\"] == \"system/Ac/ConsumptionOnOutput/L1/Power\"\r\n    )\r\n    |> last()\r\n    |> group()\r\n    |> sum()\r\n    |> set(key: \"_measurement\", value: \"load\")\r\n\r\nunion(tables: [pv, grid, load])\r\n  |> pivot(\r\n      rowKey: [],\r\n      columnKey: [\"_measurement\"],\r\n      valueColumn: \"_value\"\r\n    )\r\n"
+                        "query": "import \"array\"\r\nimport \"math\"\r\n\r\n// === DANE PRZYKŁADOWE ===\r\n// pv   = 1800.00 // (produkcja pv)\r\n// grid = -1000.00 // (import grid, dla export są wartości ujemne)\r\n// bat  = 0.0 // (ładowanie baterii, dla rozładowywania są wartości ujemne)\r\n// house_load = 800.00   // z L1+L2+L3\r\n\r\n// Pobieranie danych\r\npvRecord = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"pvinverter/Ac/Power\")\r\n  |> last()\r\n  |> group(columns: [])\r\n  |> sum(column: \"_value\")\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\ngridRecord = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"grid/Ac/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nbatRecord = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"battery/Dc/0/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nbatSocRecord = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"battery/Soc\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nconsL1 = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"system/Ac/Consumption/L1/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nconsL2 = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"system/Ac/Consumption/L2/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nconsL3 = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"system/Ac/Consumption/L3/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\npv   = if exists pvRecord._value then pvRecord._value else 0.0\r\ngrid = if exists gridRecord._value then gridRecord._value else 0.0\r\nbat  = if exists batRecord._value then -batRecord._value else 0.0\r\nbatSoc = if exists batSocRecord._value then batSocRecord._value else 0.0\r\nhouse_load = (if exists consL1._value then consL1._value else 0.0) +\r\n             (if exists consL2._value then consL2._value else 0.0) +\r\n             (if exists consL3._value then consL3._value else 0.0)\r\n\r\narray.from(rows: [\r\n  {pv: pv, load: house_load, \"battery/Dc/0/Power\": bat, \"battery/Soc\": batSoc, \"grid/Ac/Power\": grid},\r\n])\r\n\r\ndebug = array.from(rows: [\r\n  {name: \"RAW_PV\",          value: pv},\r\n  {name: \"RAW_GRID\",        value: grid},\r\n  {name: \"RAW_BAT\",         value: bat},\r\n  {name: \"HOUSE_LOAD\",      value: house_load},\r\n])\r\n"
                       }
                     },
                     "refId": "A",
@@ -1447,7 +1493,7 @@
               ],
               "transformations": [],
               "queryOptions": {
-                "timeFrom": "10s",
+                "timeFrom": "5m",
                 "maxDataPoints": 100
               }
             }
@@ -1470,21 +1516,21 @@
                 "additionalSource3Label": "Wallbox 2",
                 "additionalSource3LoadQuery": "",
                 "additionalSource3SOCQuery": "",
-                "additionalSourceAlwaysShow": true,
+                "additionalSourceAlwaysShow": false,
                 "additionalSourceColor": "rgb(81, 187, 67)",
                 "additionalSourceCount": 1,
                 "additionalSourceIcon": "battery",
                 "additionalSourceLabel": "Battery",
                 "additionalSourceLoadQuery": "battery/Dc/0/Power",
                 "additionalSourceSOCQuery": "battery/Soc",
-                "animationSpeedReference": 400,
+                "animationSpeedReference": 1000,
                 "gridColor": "rgb(232, 41, 26)",
                 "gridQuery": "grid/Ac/Power",
                 "linesColor": "rgb(104, 193, 255)",
                 "loadColor": "rgb(0, 141, 209)",
                 "loadQuery": "load",
                 "measurementUnit": "auto",
-                "padding": 20,
+                "padding": 10,
                 "showEnergyThreshold": 0,
                 "showLegend": true,
                 "solarColor": "rgb(244, 174, 1)",
@@ -1498,11 +1544,279 @@
           }
         }
       },
+      "panel-23": {
+        "kind": "Panel",
+        "spec": {
+          "id": 23,
+          "title": "Local grid flow",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "spec": {
+                        "query": "import \"array\"\r\nimport \"math\"\r\n\r\n// === DANE PRZYKŁADOWE ===\r\n// pv   = 1800.00 // (produkcja pv)\r\n// grid = -1000.00 // (import grid, dla export są wartości ujemne)\r\n// bat  = 0.0 // (ładowanie baterii, dla rozładowywania są wartości ujemne)\r\n// house_load = 800.00   // z L1+L2+L3\r\n\r\n// Pobieranie danych\r\npv1Record = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"pvinverter/Ac/Power\" and r.instanceNumber == \"20\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\npv2Record = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"pvinverter/Ac/Power\" and r.instanceNumber == \"21\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\ngridRecord = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"grid/Ac/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nbatRecord = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"battery/Dc/0/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nconsL1 = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"system/Ac/Consumption/L1/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nconsL2 = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"system/Ac/Consumption/L2/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\nconsL3 = from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"system/Ac/Consumption/L3/Power\")\r\n  |> last()\r\n  |> findRecord(fn: (key) => true, idx: 0)\r\n\r\npv1   = if exists pv1Record._value then pv1Record._value else 0.0\r\npv2   = if exists pv2Record._value then pv2Record._value else 0.0\r\npv = pv1 + pv2\r\n\r\ngrid = if exists gridRecord._value then gridRecord._value else 0.0\r\nbat  = if exists batRecord._value  then batRecord._value  else 0.0\r\n\r\nhouse_load = (if exists consL1._value then consL1._value else 0.0) +\r\n             (if exists consL2._value then consL2._value else 0.0) +\r\n             (if exists consL3._value then consL3._value else 0.0)\r\n\r\n// Wartości bezwzględne\r\npv_prod       = if pv > 0.0 then pv else 0.0\r\ngrid_import   = if grid > 0.0 then grid else 0.0\r\ngrid_export   = if grid < 0.0 then math.abs(x: grid) else 0.0\r\nbat_charge    = if bat > 0.0 then bat else 0.0\r\nbat_discharge = if bat < 0.0 then math.abs(x: bat) else 0.0\r\n\r\npv_to_house = if pv_prod < (house_load - grid_import) then pv_prod else house_load - grid_import\r\npv_to_battery = bat_charge\r\n\r\npv_to_grid = if grid_export > 0.0 then\r\n               (pv_prod - pv_to_house - pv_to_battery)\r\n             else 0.0\r\n\r\n// Udział produkcji każdego falownika\r\npv1_ratio =\r\n    if pv_prod > 0.0 then pv1 / pv_prod else 0.0\r\n\r\npv2_ratio =\r\n    if pv_prod > 0.0 then pv2 / pv_prod else 0.0\r\n\r\n// Rozdzielenie przepływów\r\npv1_to_house = pv_to_house * pv1_ratio\r\npv2_to_house = pv_to_house * pv2_ratio\r\n\r\npv1_to_battery = pv_to_battery * pv1_ratio\r\npv2_to_battery = pv_to_battery * pv2_ratio\r\n\r\npv1_to_grid = pv_to_grid * pv1_ratio\r\npv2_to_grid = pv_to_grid * pv2_ratio\r\n\r\n// Reszta domu\r\nbattery_to_house = bat_discharge\r\n\r\ngrid_to_house = grid_import\r\n\r\nlocal_flow = array.from(rows: [\r\n  // PV1\r\n  {pv: \"PV\", source: \"PV Inverter 1\", victron: \"Victron\", target: \"House\",   value: pv1_to_house},\r\n  {pv: \"PV\", source: \"PV Inverter 1\", victron: \"Victron\", target: \"Battery\", value: pv1_to_battery},\r\n  {pv: \"PV\", source: \"PV Inverter 1\", victron: \"Victron\", target: \"Grid\",    value: pv1_to_grid},\r\n\r\n  // PV2\r\n  {pv: \"PV\", source: \"PV Inverter 2\", victron: \"Victron\", target: \"House\",   value: pv2_to_house},\r\n  {pv: \"PV\", source: \"PV Inverter 2\", victron: \"Victron\", target: \"Battery\", value: pv2_to_battery},\r\n  {pv: \"PV\", source: \"PV Inverter 2\", victron: \"Victron\", target: \"Grid\",    value: pv2_to_grid},\r\n\r\n  // Pozostałe przepływy\r\n  {pv: \"Battery\", source: \"Battery\", victron: \"Victron\", target: \"House\", value: battery_to_house},\r\n  {pv: \"Grid\",    source: \"Grid\",    victron: \"Victron\", target: \"House\", value: grid_to_house},\r\n])\r\n|> filter(fn: (r) => r.value > 0.0)\r\n\r\ndebug = array.from(rows: [\r\n  {name: \"RAW_PV\",          value: pv},\r\n  {name: \"RAW_GRID\",        value: grid},\r\n  {name: \"RAW_BAT\",         value: bat},\r\n  {name: \"HOUSE_LOAD\",      value: house_load},\r\n  {name: \"PV_PROD\",         value: pv_prod},\r\n  {name: \"GRID_IMPORT\",     value: grid_import},\r\n  {name: \"GRID_EXPORT\",     value: grid_export},\r\n  {name: \"BAT_CHARGE\",      value: bat_charge},\r\n  {name: \"BAT_DISCHARGE\",   value: bat_discharge},\r\n  {name: \"PV_to_House\",     value: pv_to_house},\r\n  {name: \"PV_to_Battery\",   value: pv_to_battery},\r\n  {name: \"PV_to_Grid\",      value: pv_to_grid},\r\n  {name: \"Battery_to_House\",value: battery_to_house},\r\n  {name: \"Grid_to_House\",   value: grid_to_house},\r\n])\r\n\r\nsample_sankey = array.from(rows: [\r\n  {c1: 1, c2: 10, c3: 2, c4:1, c5:1},\r\n  {c1: 3, c2: 10, c3: 3, c4:2, c5:2},\r\n  {c1: 2, c2: 10, c3: 3, c4:3, c5:3},\r\n  {c1: 8, c2: 10, c3: 1, c4:4, c5:1}\r\n])\r\n\r\nlocal_flow"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "kind": "Transformation",
+                  "group": "organize",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {
+                        "pv": 1,
+                        "source": 0,
+                        "target": 3,
+                        "value": 4,
+                        "victron": 2
+                      },
+                      "renameByName": {
+                        "pv": " ",
+                        "source": "Sources",
+                        "target": "Loads",
+                        "value": "",
+                        "victron": "Victron"
+                      }
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {
+                "timeFrom": "5m",
+                "maxDataPoints": 100
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "netsage-sankey-panel",
+            "version": "1.1.4",
+            "spec": {
+              "options": {
+                "color": "blue",
+                "iteration": 1,
+                "labelSize": 15,
+                "monochrome": false,
+                "nodeColor": "grey",
+                "nodePadding": 20,
+                "nodeWidth": 30,
+                "valueField": "value"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "watt",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds",
+                    "seriesBy": "last"
+                  },
+                  "fieldMinMax": false
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-24": {
+        "kind": "Panel",
+        "spec": {
+          "id": 24,
+          "title": "Inverter temperature",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "spec": {
+                        "query": "from(bucket: \"solaredge\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"I_Temp\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"site\", \"slave_id\"])\r\n"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.0.3",
+            "spec": {
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "celsius",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 60,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 70,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-25": {
+        "kind": "Panel",
+        "spec": {
+          "id": 25,
+          "title": "Battery min/max cell voltage",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "spec": {
+                        "query": "import \"strings\"\r\n\r\nfrom(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/System/MaxCellVoltage\" or r[\"_measurement\"] == \"battery/System/MinCellVoltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _measurement: strings.trimPrefix(\r\n          v: r._measurement,\r\n          prefix: \"battery/System/\"\r\n      )\r\n  }))\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.0.3",
+            "spec": {
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "volt",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 3.5,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 3.6,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
       "panel-3": {
         "kind": "Panel",
         "spec": {
           "id": 3,
-          "title": "Battery SoC/Temperature",
+          "title": "Battery SoC/temperature",
           "description": "",
           "links": [],
           "data": {
@@ -1547,7 +1861,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -1555,7 +1869,12 @@
                   "multiLane": false
                 },
                 "legend": {
-                  "calcs": [],
+                  "calcs": [
+                    "min",
+                    "mean",
+                    "max",
+                    "range"
+                  ],
                   "displayMode": "list",
                   "placement": "bottom",
                   "showLegend": true
@@ -1644,7 +1963,7 @@
         "kind": "Panel",
         "spec": {
           "id": 4,
-          "title": "Battery min/max cell temperature and voltage",
+          "title": "Battery min/max cell temperature",
           "description": "",
           "links": [],
           "data": {
@@ -1659,7 +1978,7 @@
                       "group": "influxdb",
                       "version": "v0",
                       "spec": {
-                        "query": "from(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/System/MinCellTemperature\" or r[\"_measurement\"] == \"battery/System/MaxCellTemperature\" or r[\"_measurement\"] == \"battery/System/MaxCellVoltage\" or r[\"_measurement\"] == \"battery/System/MinCellVoltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
+                        "query": "import \"strings\"\r\n\r\nfrom(bucket: \"venus\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery/System/MinCellTemperature\" or r[\"_measurement\"] == \"battery/System/MaxCellTemperature\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _measurement: strings.trimPrefix(\r\n          v: r._measurement,\r\n          prefix: \"battery/System/\"\r\n      )\r\n  }))\r\n  |> drop(columns: [\"_field\", \"instanceNumber\", \"name\", \"portalId\"])\r\n"
                       }
                     },
                     "refId": "A",
@@ -1674,7 +1993,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "value",
@@ -1695,6 +2014,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "celsius",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -1703,13 +2023,17 @@
                         "color": "green"
                       },
                       {
-                        "value": 80,
+                        "value": 40,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 50,
                         "color": "red"
                       }
                     ]
                   },
                   "color": {
-                    "mode": "palette-classic"
+                    "mode": "thresholds"
                   }
                 },
                 "overrides": []
@@ -1752,7 +2076,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -1760,7 +2084,9 @@
                   "multiLane": false
                 },
                 "legend": {
-                  "calcs": [],
+                  "calcs": [
+                    "range"
+                  ],
                   "displayMode": "list",
                   "placement": "bottom",
                   "showLegend": true
@@ -1835,7 +2161,7 @@
         "kind": "Panel",
         "spec": {
           "id": 8,
-          "title": "Ac Out Power/Frequency",
+          "title": "AC out power/frequency",
           "description": "",
           "links": [],
           "data": {
@@ -1865,7 +2191,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -1992,7 +2318,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -2106,6 +2432,24 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
+                "name": "panel-23"
+              }
+            }
+          },
+          {
+            "kind": "AutoGridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-24"
+              }
+            }
+          },
+          {
+            "kind": "AutoGridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
                 "name": "panel-1"
               }
             }
@@ -2143,6 +2487,15 @@
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
+              }
+            }
+          },
+          {
+            "kind": "AutoGridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-25"
               }
             }
           },
@@ -2205,6 +2558,15 @@
             "spec": {
               "element": {
                 "kind": "ElementReference",
+                "name": "panel-16"
+              }
+            }
+          },
+          {
+            "kind": "AutoGridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
                 "name": "panel-14"
               }
             }
@@ -2215,15 +2577,6 @@
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-15"
-              }
-            }
-          },
-          {
-            "kind": "AutoGridLayoutItem",
-            "spec": {
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-16"
               }
             }
           },

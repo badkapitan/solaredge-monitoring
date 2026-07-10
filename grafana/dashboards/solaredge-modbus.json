@@ -3,8 +3,8 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "KOkFUpQMz",
-    "generation": 9,
-    "creationTimestamp": "2024-07-07T20:48:18Z",
+    "generation": 4,
+    "creationTimestamp": "2026-07-10T18:51:46Z",
     "labels": {},
     "annotations": {}
   },
@@ -17,10 +17,7 @@
             "kind": "DataQuery",
             "group": "grafana",
             "version": "v0",
-            "spec": {},
-            "labels": {
-              "grafana.app/export-label": "grafana-1"
-            }
+            "spec": {}
           },
           "enable": true,
           "hide": true,
@@ -51,9 +48,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -103,7 +97,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "value",
@@ -165,9 +159,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -219,7 +210,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "barShape": "flat",
@@ -296,9 +287,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -350,7 +338,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "barShape": "flat",
@@ -428,9 +416,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -482,7 +467,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "barShape": "flat",
@@ -559,9 +544,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -736,9 +718,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -788,7 +767,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "value",
@@ -850,9 +829,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -902,7 +878,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "barchart",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "barRadius": 0,
@@ -1004,9 +980,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1161,9 +1134,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1215,7 +1185,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -1338,9 +1308,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1393,7 +1360,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "stat",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "colorMode": "background",
@@ -1461,9 +1428,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1512,9 +1476,6 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
@@ -1657,9 +1618,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1708,9 +1666,6 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
@@ -1853,9 +1808,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -1904,9 +1856,6 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
@@ -2049,9 +1998,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2206,9 +2152,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2257,9 +2200,6 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
@@ -2403,9 +2343,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2454,9 +2391,6 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
@@ -2599,9 +2533,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2653,7 +2584,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "barShape": "flat",
@@ -2731,9 +2662,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2783,7 +2711,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "alignValue": "left",
@@ -2928,9 +2856,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -2980,7 +2905,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -3099,9 +3024,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -3151,7 +3073,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "alignValue": "center",
@@ -3240,9 +3162,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -3291,9 +3210,6 @@
                       "kind": "DataQuery",
                       "group": "fetzerch-sunandmoon-datasource",
                       "version": "v0",
-                      "datasource": {
-                        "name": "sun_and_moon"
-                      },
                       "spec": {
                         "target": [
                           "sun_altitude"
@@ -3312,7 +3228,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -3436,9 +3352,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -3620,9 +3533,6 @@
                       "kind": "DataQuery",
                       "group": "influxdb",
                       "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
                       "spec": {
                         "groupBy": [
                           {
@@ -3674,7 +3584,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.0.1+security-01",
+            "version": "13.0.3",
             "spec": {
               "options": {
                 "barShape": "flat",
@@ -4127,9 +4037,6 @@
             "kind": "DataQuery",
             "group": "influxdb",
             "version": "v0",
-            "datasource": {
-              "name": "influxdb"
-            },
             "spec": {
               "__legacyStringValue": "includebuckets = /solaredge.*/\nexcludebuckets = /solaredge_cloud.*/\n\n// Assumption: all buckets contain the whole time range, just with a different aggregation interval (and retention policy)\nbuckets()\n    |> filter(fn: (r) => r.name =~ includebuckets and r.name !~ excludebuckets)\n    |> map(\n        fn: (r) => ({r with\n            //replace retentionpolicy infinity with a high number in NS\n            retentionPeriod: if r.retentionPeriod == 0 then\n                999999999999999999\nelse\n                r.retentionPeriod,\n            //calculate the duration from \"to\" and \"from\" dashboard timespan and convert it to nanosecond\n            DashboardDurationInNS: (${__to} - ${__from}) * 1000000,\n        }),\n    )\n    |> filter(fn: (r) => r.DashboardDurationInNS <= r.retentionPeriod)\n    |> sort(columns: [\"retentionPeriod\"], desc: false)\n    |> limit(n: 1)\n    |> keep(columns: [\"name\"])"
             }
@@ -4160,9 +4067,6 @@
             "kind": "DataQuery",
             "group": "influxdb",
             "version": "v0",
-            "datasource": {
-              "name": "influxdb"
-            },
             "spec": {
               "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge\",\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)"
             }
@@ -4193,9 +4097,6 @@
             "kind": "DataQuery",
             "group": "influxdb",
             "version": "v0",
-            "datasource": {
-              "name": "influxdb"
-            },
             "spec": {
               "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge\",\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)"
             }
