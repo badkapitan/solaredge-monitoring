@@ -1,24 +1,5 @@
 services:
 
-  proxy:
-    container_name: proxy
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: proxy/Dockerfile
-    networks:
-      - common_network
-    ports:
-      - "3443:443"
-    depends_on:
-      - grafana
-    environment:
-      - DOMAIN=${PROXY_DOMAIN}
-      - ALT_NAMES=${PROXY_ALT_NAMES}
-      - TARGET_PORT=3000
-      - TARGET_HOST=grafana
-      - SSL_PORT=443
-
   influxdb:
     image: influxdb:2.9.1-alpine
     container_name: influxdb
@@ -95,6 +76,7 @@ services:
       - ./grafana/dashboards:/etc/grafana/dashboards:rw
     networks:
       - common_network
+      - proxy
     depends_on:
       - influxdb
     environment:
@@ -102,16 +84,24 @@ services:
       - GF_LOG_MODE=console file
       - GF_LOG_LEVEL=info
       # To get admin/editor access toggle comment on following 3 lines (GF_SECURITY_ADMIN_USER, GF_SECURITY_ADMIN_PASSWORD, GF_AUTH_DISABLE_LOGIN_FORM)
-      # - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
-      # - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      # - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_SERVER_ROOT_URL=https://isladeazafatas.synology.me/fv/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/victron-mqtt.json
       - GF_PLUGINS_PREINSTALL_SYNC=fetzerch-sunandmoon-datasource,lehmannch-flow-panel,netsage-sankey-panel
       - TZ=Europe/Warsaw
-    ports:
-      - 3000:3000
+    expose:
+      - "3000"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.solaredge.rule: "Host(`isladeazafatas.synology.me`) && (Path(`/fv`) || PathPrefix(`/fv/`))"
+      traefik.http.routers.solaredge.entrypoints: "websecure"
+      traefik.http.routers.solaredge.tls.certresolver: "letsencrypt"
+      traefik.http.services.solaredge.loadbalancer.server.port: "3000"
     user: "472:100"
 
   loader:
@@ -151,3 +141,6 @@ volumes:
 networks:
   common_network:
     driver: bridge
+  proxy:
+    name: isla-proxy
+    external: true

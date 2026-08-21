@@ -53,7 +53,9 @@ The data stored in InfluxDB is presented through Grafana dashboards. These dashb
 
 ## Monitoring Dashbord
 
-Data is displayed through Grafana, accessible locally at http://localhost:3000. Use the default username (admin) and password (admin), opt out of changing the password, and there you have it – your SolarEdge real-time monitoring interface is ready!
+Data is displayed through Grafana at
+`https://isladeazafatas.synology.me/fv/`, via the shared `isla-proxy` Traefik
+network. Start the `isla-proxy` Compose project before this one.
 
 The general dashboards include:
 * Production today vs best
@@ -99,7 +101,7 @@ docker-compose up grafana
 
 Access Grafana at:
 
-- URL: [http://localhost:3000](http://localhost:3000)
+- URL: `https://isladeazafatas.synology.me/fv/`
 - Username: `admin`
 - Password: `password`
 
