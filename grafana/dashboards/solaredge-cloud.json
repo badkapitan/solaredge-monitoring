@@ -594,7 +594,7 @@
                         ],
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"solaredge_cloud\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> filter(fn: (r) => not contains(value: r[\"id\"], set: [\"181087139\", \"181087208\", \"309342696\", \"309345867\", \"309346016\"]))\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])",
+                        "query": "from(bucket: \"solaredge_cloud\")\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"panel\" and r[\"site\"] == \"${site}\" and r[\"_field\"] == \"w\")\n|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n|> drop(columns: [\"_start\", \"_stop\", \"_field\", \"_measurement\", \"site\"])",
                         "queryType": "randomWalk",
                         "resultFormat": "time_series",
                         "select": [
@@ -2997,7 +2997,7 @@
     ],
     "timeSettings": {
       "from": "now/d",
-      "to": "now/d",
+      "to": "now",
       "autoRefresh": "2h",
       "autoRefreshIntervals": [
         "2h",
