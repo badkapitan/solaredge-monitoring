@@ -7,6 +7,12 @@ deleteDatasources:
     orgId: 1
   - name: solaredge
     orgId: 1
+  # Recreate legacy/generated datasource identities with stable UIDs below.
+  # This only removes Grafana connection definitions, never InfluxDB data.
+  - name: influxdb
+    orgId: 1
+  - name: sun_and_moon
+    orgId: 1
 
 # list of datasources to insert/update depending
 # whats available in the database
@@ -14,6 +20,7 @@ datasources:
   - orgId: 1
     version: 2
     name: influxdb
+    uid: influxdb
     type: influxdb
     access: proxy
     url: http://influxdb:8086
@@ -28,6 +35,7 @@ datasources:
     editable: true
   - orgId: 1
     name: sun_and_moon
+    uid: sun_and_moon
     type: fetzerch-sunandmoon-datasource
     access: proxy
     jsonData:

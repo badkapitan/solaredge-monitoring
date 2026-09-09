@@ -94,6 +94,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -206,6 +209,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -318,6 +324,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -339,6 +348,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -504,6 +516,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -616,6 +631,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -637,6 +655,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -771,6 +792,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -792,6 +816,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -942,6 +969,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1026,6 +1056,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1112,6 +1145,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1133,6 +1169,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -1314,6 +1353,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1335,6 +1377,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -1502,6 +1547,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1683,6 +1731,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1794,6 +1845,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -1815,6 +1869,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -2006,6 +2063,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2027,6 +2087,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -2187,6 +2250,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2208,6 +2274,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -2381,6 +2450,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2561,6 +2633,9 @@
                       "labels": {
                         "grafana.app/export-label": "influxdb-1",
                         "grafana.app/export-datasource-name": "influxdb"
+                      },
+                      "datasource": {
+                        "name": "influxdb"
                       }
                     },
                     "refId": "A",
@@ -2582,6 +2657,9 @@
                       "labels": {
                         "grafana.app/export-label": "fetzerch-sunandmoon-datasource-1",
                         "grafana.app/export-datasource-name": "sun_and_moon"
+                      },
+                      "datasource": {
+                        "name": "sun_and_moon"
                       }
                     },
                     "refId": "B",
@@ -3013,8 +3091,8 @@
         "spec": {
           "name": "site",
           "current": {
-            "text": "",
-            "value": ""
+            "text": "2493538",
+            "value": "2493538"
           },
           "hide": "dontHide",
           "refresh": "onDashboardLoad",
@@ -3025,16 +3103,19 @@
             "group": "influxdb",
             "version": "v0",
             "spec": {
-              "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)"
+              "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -30d\n)"
             },
             "labels": {
               "grafana.app/export-label": "influxdb-1",
               "grafana.app/export-datasource-name": "influxdb"
+            },
+            "datasource": {
+              "name": "influxdb"
             }
           },
           "regex": "",
           "sort": "disabled",
-          "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -1d\n)",
+          "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"site\",\n    predicate: (r) => true,\n    start: -30d\n)",
           "options": [],
           "multi": false,
           "includeAll": false,
@@ -3046,8 +3127,8 @@
         "spec": {
           "name": "sn",
           "current": {
-            "text": "",
-            "value": ""
+            "text": "7B026CDE-C7",
+            "value": "7B026CDE-C7"
           },
           "hide": "dontHide",
           "refresh": "onDashboardLoad",
@@ -3058,16 +3139,19 @@
             "group": "influxdb",
             "version": "v0",
             "spec": {
-              "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)"
+              "__legacyStringValue": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -30d\n)"
             },
             "labels": {
               "grafana.app/export-label": "influxdb-1",
               "grafana.app/export-datasource-name": "influxdb"
+            },
+            "datasource": {
+              "name": "influxdb"
             }
           },
           "regex": "",
           "sort": "disabled",
-          "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -1d\n)",
+          "definition": "import \"influxdata/influxdb/v1\"\nv1.tagValues(\n    bucket: \"solaredge_cloud\",\n    tag: \"sn\",\n    predicate: (r) => true,\n    start: -30d\n)",
           "options": [],
           "multi": false,
           "includeAll": false,
