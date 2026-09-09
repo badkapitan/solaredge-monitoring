@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import json
+import asyncio
 import datetime
 import codecs
 import sys
@@ -12,7 +12,9 @@ import getpass
 import requests
 import httpx
 import pytz
+import aiohttp
 from solaredge import MonitoringClient
+from solaredge_web import SolarEdgeWeb
 
 
 # Stand-alone daemon managed by Telegraf.
@@ -36,11 +38,8 @@ SETTING_SITE_PW = os.getenv('SOLAREDGE_SITE_PW', '')
 # hence some of it has to be scraped from their website. As a bonus
 # their API is rate limited but their website is not (or a much higher limit?).
 
-BASE_SITE_PANELS_URL = 'https://monitoring.solaredge.com/solaredge-web/p/playbackData'
-SITE_LOGIN_URL = 'https://monitoring.solaredge.com/solaredge-apigw/api/login'
 BASE_API_URL = 'https://monitoringapi.solaredge.com'
 REQUEST_TIMEOUT = 60
-SITE_COOKIE_FILE = 'solaredge.com.cookies'
 
 # Local files created by this program
 
@@ -290,32 +289,6 @@ def initialize_last_updated():
         LAST_UPDATES['playback'] = site_dict.copy()
 
 
-def ensure_logged_in(session: requests.Session, function):
-    if os.path.exists(os.path.join(HOME_DIR, SITE_COOKIE_FILE)):
-        with open(os.path.join(HOME_DIR, SITE_COOKIE_FILE), 'r') as f:
-            session.cookies.update(requests.utils.cookiejar_from_dict(json.load(f)))
-            if ("CSRF-TOKEN" in session.cookies.keys()):
-                response = function()
-                if response.status_code == 200:
-                    return response
-
-    # Log in again
-    loginResponse = session.post(
-        SITE_LOGIN_URL,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
-        data={"j_username": SETTING_SITE_USERNAME, "j_password": SETTING_SITE_PW}
-    )
-
-    if loginResponse.status_code != 200:
-        print_err(f"\nUNABLE TO LOGIN TO SOLAREDGE!\n\nLogin response status code: {loginResponse.status_code}. Login response content: {loginResponse.text}")
-        return loginResponse
-
-    with open(os.path.join(HOME_DIR, SITE_COOKIE_FILE), 'w') as f:
-        json.dump(requests.utils.dict_from_cookiejar(session.cookies), f)
-
-    return function()
-
-
 def update_all_data(endTime: datetime.datetime):
     global USED_API_CALLS
     playbackTimeStamps = LAST_UPDATES['playback']
@@ -323,12 +296,14 @@ def update_all_data(endTime: datetime.datetime):
     for site in SITE_IDS:
         if HAS_OPTIMIZERS[site]:
             print_err(f"Site {site} has optimizers")
-            nr_days = max((endTime - playbackTimeStamps[site]).days,
-                          7)  # API only supports up to 1 week history
-            days = [0]
-            if nr_days != 1:
-                days = list(range(-nr_days, 0, 1))
-            if get_playback_data_site(days, site):
+            # The replacement playback API supports at most roughly one week.
+            # If the scraper was offline longer, fetch the newest data rather
+            # than asking SolarEdge for an unsupported, unbounded interval.
+            start_time = max(
+                playbackTimeStamps[site],
+                endTime - datetime.timedelta(days=7)
+            )
+            if get_playback_data_site(start_time, endTime, site):
                 playbackTimeStamps[site] = endTime
         else:
             print_err(f"Site {site} doesn't have optimizers")
@@ -463,60 +438,49 @@ def get_data_api(site: str, startTime: datetime, endTime: datetime):
 # Scrape website
 
 
-# Based on: https://gist.github.com/dragoshenron/0920411a2f3e53c214be0a26f51c53e2
-# Note: only available if you have optimizers
-def get_playback_data_site(days, site: str):
+# Note: only available if you have optimizers. SolarEdge retired the legacy
+# /solaredge-web/p/playbackData endpoint (HTTP 410) in 2026. solaredge-web uses
+# the portal's replacement OAuth2 flow and /services/layout/playback API.
+async def _get_playback_data_site(start_time: datetime.datetime,
+                                  end_time: datetime.datetime, site: str):
     global USED_API_CALLS
-    PANELS_DAILY_DATA = '4'
-    PANELS_WEEKLY_DATA = '5'
-    timeUnit = PANELS_WEEKLY_DATA if len(
-        days) > 1 or days[0] != 0 else PANELS_DAILY_DATA
-
-    session = requests.session()
-
     USED_API_CALLS += 1
-    panels = ensure_logged_in(
-        session, lambda: session.post(
-            BASE_SITE_PANELS_URL,
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRF-TOKEN": session.cookies["CSRF-TOKEN"]
-            },
-            data={
-                "fieldId": site,
-                "timeUnit": timeUnit
-            },
-            timeout=REQUEST_TIMEOUT))
-    if panels.status_code != 200:
-        print_err(
-            f"SolarEdge Cloud: Playback: HTTP {panels.status_code} : {panels.url}"
+    async with aiohttp.ClientSession() as session:
+        client = SolarEdgeWeb(
+            SETTING_SITE_USERNAME,
+            SETTING_SITE_PW,
+            site,
+            session,
+            timeout=REQUEST_TIMEOUT,
         )
-        return
+        equipment = await client.async_get_equipment()
+        energy_data = await client.async_get_energy_data(start_time, end_time)
 
-    if "reportersData" not in panels.text:
-        print_err(
-            f"SolarEdge Cloud: Playback did not return useful data: status code: {panels.status_code}. Content:\n{panels.text}"
-        )
-        return
+    site_timezone = pytz.timezone(SITE_TIMEZONES[site])
+    for slot in energy_data:
+        slot_time = slot.start_time
+        if slot_time.tzinfo is None:
+            slot_time = site_timezone.localize(slot_time)
+        timestamp = f"{int(slot_time.astimezone(pytz.utc).timestamp())}000000000"
+        for equipment_id, value in slot.values.items():
+            # async_get_energy_data also returns aggregates for strings,
+            # inverters and the site. Only emit optimizer measurements.
+            if equipment.get(equipment_id, {}).get("type") != "OPTIMIZER":
+                continue
+            print(
+                f'panel,site={site},id={equipment_id} w={float(value)} {timestamp}',
+                flush=False
+            )
+    return True
 
-    # Correct their JSON
-    response = panels.content.decode("utf-8").replace('\'', '"').replace(
-        'Array', '').replace('key', '"key"').replace('value', '"value"')
-    response = response.replace('timeUnit', '"timeUnit"').replace(
-        'fieldData', '"fieldData"').replace('reportersData', '"reportersData"')
-    response = json.loads(response)
-    for date, sids in response["reportersData"].items():
-        timestamp = str(int((pytz.timezone(SITE_TIMEZONES[site]).localize(
-            datetime.datetime.strptime(date,
-                                       '%a %b %d %H:%M:%S GMT %Y')).astimezone(
-                                           pytz.utc)).timestamp())) + "000000000"
-        for values in sids.values():  # SID's (key) are meaningless
-            for panel in values:
-                if panel['value'] != "0":  # No measurement
-                    print(
-                        f'panel,site={site},id={panel["key"]} w={float(safe_str_to_float(panel["value"]))} {timestamp}',
-                        flush=False)
-    return
+
+def get_playback_data_site(start_time: datetime.datetime,
+                           end_time: datetime.datetime, site: str):
+    try:
+        return asyncio.run(_get_playback_data_site(start_time, end_time, site))
+    except (aiohttp.ClientError, asyncio.TimeoutError, ValueError, KeyError) as error:
+        print_err(f"SolarEdge Cloud: Playback: {type(error).__name__}: {error}")
+        return False
 
 
 # TODO

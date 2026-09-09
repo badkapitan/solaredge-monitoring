@@ -9,6 +9,7 @@ dependencies = [
     "httpx",
     "httpx[http2]",
     "solaredge>1",
+    "solaredge-web>=0.3.1,<0.4",
 ]
 optional-dependencies = { dev = [
     "pudb",
