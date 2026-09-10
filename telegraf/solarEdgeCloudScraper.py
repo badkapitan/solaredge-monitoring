@@ -445,6 +445,11 @@ async def _get_playback_data_site(start_time: datetime.datetime,
                                   end_time: datetime.datetime, site: str):
     global USED_API_CALLS
     USED_API_CALLS += 1
+    print_err(
+        f"SolarEdge Cloud: Playback debug: site={site}, "
+        f"range={start_time.isoformat()}..{end_time.isoformat()}, "
+        f"duration={end_time - start_time}"
+    )
     async with aiohttp.ClientSession() as session:
         client = SolarEdgeWeb(
             SETTING_SITE_USERNAME,
@@ -454,9 +459,28 @@ async def _get_playback_data_site(start_time: datetime.datetime,
             timeout=REQUEST_TIMEOUT,
         )
         equipment = await client.async_get_equipment()
+        equipment_types = {}
+        for equipment_data in equipment.values():
+            equipment_type = equipment_data.get("type", "<missing>")
+            equipment_types[equipment_type] = equipment_types.get(equipment_type, 0) + 1
+        print_err(
+            f"SolarEdge Cloud: Playback debug: site={site}, "
+            f"equipment={len(equipment)}, types={equipment_types}"
+        )
         energy_data = await client.async_get_energy_data(start_time, end_time)
 
+    slots_with_values = sum(bool(slot.values) for slot in energy_data)
+    total_values = sum(len(slot.values) for slot in energy_data)
+    first_slot = energy_data[0].start_time.isoformat() if energy_data else None
+    last_slot = energy_data[-1].start_time.isoformat() if energy_data else None
+    print_err(
+        f"SolarEdge Cloud: Playback debug: site={site}, slots={len(energy_data)}, "
+        f"slots_with_values={slots_with_values}, values={total_values}, "
+        f"first_slot={first_slot}, last_slot={last_slot}"
+    )
+
     site_timezone = pytz.timezone(SITE_TIMEZONES[site])
+    optimizer_values = 0
     for slot in energy_data:
         slot_time = slot.start_time
         if slot_time.tzinfo is None:
@@ -467,10 +491,15 @@ async def _get_playback_data_site(start_time: datetime.datetime,
             # inverters and the site. Only emit optimizer measurements.
             if equipment.get(equipment_id, {}).get("type") != "OPTIMIZER":
                 continue
+            optimizer_values += 1
             print(
                 f'panel,site={site},id={equipment_id} w={float(value)} {timestamp}',
                 flush=False
             )
+    print_err(
+        f"SolarEdge Cloud: Playback debug: site={site}, "
+        f"emitted_optimizer_values={optimizer_values}"
+    )
     return True
 
 
