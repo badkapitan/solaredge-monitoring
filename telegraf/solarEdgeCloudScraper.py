@@ -297,11 +297,17 @@ def update_all_data(endTime: datetime.datetime):
         if HAS_OPTIMIZERS[site]:
             print_err(f"Site {site} has optimizers")
             # The replacement playback API supports at most roughly one week.
-            # If the scraper was offline longer, fetch the newest data rather
-            # than asking SolarEdge for an unsupported, unbounded interval.
+            # Always overlap the previous 24 hours because optimizer playback
+            # is hourly and can lag behind the current time. Without overlap,
+            # advancing the cursor every 15 minutes permanently skips delayed
+            # hourly slots. InfluxDB overwrites points with identical series
+            # tags and timestamps, so re-emitting this window is safe.
             start_time = max(
-                playbackTimeStamps[site],
-                endTime - datetime.timedelta(days=7)
+                endTime - datetime.timedelta(days=7),
+                min(
+                    playbackTimeStamps[site],
+                    endTime - datetime.timedelta(hours=24)
+                )
             )
             if get_playback_data_site(start_time, endTime, site):
                 playbackTimeStamps[site] = endTime
