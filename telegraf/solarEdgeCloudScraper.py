@@ -103,6 +103,7 @@ def wh_unit_to_multiplier(unit: str):
 
 
 def print_err(*args, **kwargs):
+    kwargs.setdefault("flush", True)
     print(*args, file=sys.stderr, **kwargs)
 
 
@@ -575,9 +576,34 @@ def scrape_full_history():
     ranges = get_production_duration()
     remaining_API_calls = reduce_and_check(HISTORY_SCRAPER_MAX_API_CALLS)
 
+    print_err(
+        f'History scrape started: sites={SITE_IDS}, '
+        f'max_history_days={HISTORY_SCRAPER_MAX_HISTORY_DAYS}'
+    )
+
     for site in SITE_IDS:
         log_err(f'Scraping full history for site: {site}')
         ranges = ranges[site]
+        print_err(
+            f'History scrape: site={site}, '
+            f'available_range={ranges[0].isoformat()}..{ranges[1].isoformat()}'
+        )
+
+        # Optimizer playback API is limited to a maximum 7-day range.
+        # Fetch consecutive windows so history mode also restores panel data.
+        if HAS_OPTIMIZERS[site]:
+            playbackLastUpdates = last_updates['playback']
+            for week in get_date_intervals(
+                    ranges[0], min(playbackLastUpdates[site], ranges[1]), 7):
+                print_err(f'Scraping panel playback for week: {week}')
+                log_err(f'Scraping panel playback for week: {week}')
+                while not get_playback_data_site(week[0], week[1], site):
+                    time.sleep(RETRY_SLEEP)
+                time.sleep(INTERVAL_SLEEP)
+            print_err(f'History scrape: panel playback complete for site={site}')
+            flush()
+        else:
+            print_err(f'History scrape: site={site} has no optimizers, skipping panel playback')
 
         # API limited to 1 month time range (apparently 1 month == 28 days)
         # Assumption: not called between midnight and UPDATE_INTERVAL
@@ -586,11 +612,13 @@ def scrape_full_history():
                                         min(powerLastUpdates[site], ranges[1]),
                                         28):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
+            print_err(f'Scraping power history for range: {month}')
             log_err(f'Scraping power api for months: {month}')
             while not get_power_api(site, month[0], month[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
             time.sleep(INTERVAL_SLEEP)
+        print_err(f'History scrape: power complete for site={site}')
         flush()
 
         # API limited to 1 month time range
@@ -598,11 +626,13 @@ def scrape_full_history():
         for month in get_date_intervals(
                 ranges[0], min(energyLastUpdates[site], ranges[1]), 28):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
+            print_err(f'Scraping energy history for range: {month}')
             log_err(f'Scraping energy api for months: {month}')
             while not get_energy_api(site, month[0], month[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
             time.sleep(INTERVAL_SLEEP)
+        print_err(f'History scrape: energy complete for site={site}')
         flush()
 
         # API limited to 1 week time range
@@ -611,12 +641,18 @@ def scrape_full_history():
                                        min(dataLastUpdates[site], ranges[1]),
                                        7):
             remaining_API_calls = reduce_and_check(remaining_API_calls)
+            print_err(f'Scraping inverter data history for range: {week}')
             log_err(f'Scraping data api for weeks: {week}')
             while not get_data_api(site, week[0], week[1]):
                 remaining_API_calls = reduce_and_check(remaining_API_calls)
                 time.sleep(RETRY_SLEEP)
             time.sleep(INTERVAL_SLEEP)
+        print_err(f'History scrape: inverter data complete for site={site}')
         flush()
+
+        print_err(f'History scrape: site={site} complete')
+
+    print_err(f'History scrape complete. Used api calls: {USED_API_CALLS}')
 
 
 # ---------------------------------- Main --------------------------------------
